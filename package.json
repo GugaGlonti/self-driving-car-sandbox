@@ -1,0 +1,19 @@
+{
+  "name": "self-driving-car",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build_watch": "tsc -w -p . --outDir dist",
+    "start": "npm run build_watch && echo 'Start Live Server in VSCode manually'",
+    "build": "tsc -p . --outDir dist",
+    "try": "npm run build &&  live-server --port=8080 --entry-file=dist/index.html"
+  },
+  "author": "Guga Glonti",
+  "license": "ISC",
+  "description": "self driving car simulation",
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "typescript": "^5.5.4"
+  }
+}
