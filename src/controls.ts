@@ -1,7 +1,4 @@
-const UP = 'ArrowUp';
-const DOWN = 'ArrowDown';
-const LEFT = 'ArrowLeft';
-const RIGHT = 'ArrowRight';
+import { DOWN, LEFT, RIGHT, UP } from './utils/constants.js';
 
 export default class Controls {
   public forward = false;

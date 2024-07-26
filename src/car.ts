@@ -1,17 +1,20 @@
 import Controls from './controls.js';
 
-const CAR_DEFAULTS = { X: 100, Y: 100, WIDTH: 50, HEIGHT: 50, SPEED: 0, TOP_SPEED: 10, ACCELERATION: 0.1, FRICTION: 0.01 };
+import { ROAD_WIDTH } from './utils/constants.js';
 
 export default class Car {
-  private x: number = CAR_DEFAULTS.X;
-  private y: number = CAR_DEFAULTS.Y;
-  private width: number = CAR_DEFAULTS.WIDTH;
-  private height: number = CAR_DEFAULTS.HEIGHT;
+  private x = ROAD_WIDTH / 2;
+  private y = 600;
+  private width = 30;
+  private height = 50;
 
-  private speed: number = CAR_DEFAULTS.SPEED;
-  private topSpeed: number = CAR_DEFAULTS.TOP_SPEED;
-  private acceleration: number = CAR_DEFAULTS.ACCELERATION;
-  private friction: number = CAR_DEFAULTS.FRICTION;
+  private angle = 0;
+  private steeringForce = 0.03;
+  private speed = 0;
+  private topSpeed = 3;
+  private reverseSpeed = 2;
+  private acceleration = 0.035;
+  private friction = 0.01;
 
   private controls: Controls;
 
@@ -19,11 +22,36 @@ export default class Car {
     this.controls = controls;
   }
 
-  update() {}
+  public update() {
+    this.move();
+  }
 
-  draw(ctx: CanvasRenderingContext2D) {
+  private move() {
+    if (this.controls.forward) this.speed += this.acceleration;
+    if (this.controls.reverse) this.speed -= this.acceleration;
+
+    if (this.speed > this.topSpeed) this.speed = this.topSpeed;
+    if (this.speed < -this.reverseSpeed) this.speed = -this.reverseSpeed;
+
+    if (this.speed > 0) this.speed -= this.friction;
+    if (this.speed < 0) this.speed += this.friction;
+
+    if (Math.abs(this.speed) < this.friction) this.speed = 0;
+
+    if (this.controls.left) this.angle += this.steeringForce * (this.speed / this.topSpeed);
+    if (this.controls.right) this.angle -= this.steeringForce * (this.speed / this.topSpeed);
+
+    this.x -= Math.sin(this.angle) * this.speed;
+    this.y -= Math.cos(this.angle) * this.speed;
+  }
+
+  public draw(ctx: CanvasRenderingContext2D) {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(-this.angle);
     ctx.beginPath();
-    ctx.rect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+    ctx.rect(-this.width / 2, -this.height / 2, this.width, this.height);
     ctx.fill();
+    ctx.restore();
   }
 }
