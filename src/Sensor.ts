@@ -78,7 +78,7 @@ export default class Sensor implements Controlable {
       const reading = this.readings[i];
       if (reading) {
         drawLine(ctx, start, reading, 'yellow');
-        drawLine(ctx, reading, end, 'black');
+        drawLine(ctx, reading, end, 'red');
       } else {
         drawLine(ctx, start, end, 'yellow');
       }

@@ -8,10 +8,10 @@ export default class Road implements Controlable {
   private left = this.x - ROAD_WIDTH / 2 + SHOULDER_WIDTH;
   private right = this.x + ROAD_WIDTH / 2 - SHOULDER_WIDTH;
 
-  private visibleBorders = true;
-
   private top = -INF;
   private bottom = INF;
+
+  private visibleBorders = false;
 
   private laneCount: number;
 
@@ -43,6 +43,18 @@ export default class Road implements Controlable {
         drawLine(ctx, start, end, 'red');
       });
     }
+  }
+
+  private updateBorders() {
+    this.topleft = { x: this.left, y: this.top };
+    this.topright = { x: this.right, y: this.top };
+    this.bottomleft = { x: this.left, y: this.bottom };
+    this.bottomright = { x: this.right, y: this.bottom };
+
+    this.borders = [
+      [this.topleft, this.bottomleft],
+      [this.topright, this.bottomright],
+    ];
   }
 
   public getBorders() {
@@ -100,6 +112,13 @@ export default class Road implements Controlable {
   }
 
   public setParameter(param: string, value: number) {
+    if (param === 'left' || param === 'right') {
+      const timeout = setTimeout(() => {
+        this.updateBorders();
+        clearTimeout(timeout);
+      }, 10);
+    }
+
     // @ts-ignore
     this[param] = value;
   }
