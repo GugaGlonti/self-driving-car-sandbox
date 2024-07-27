@@ -52,7 +52,7 @@ export default class Road implements Controlable {
     if (i === 0 || i === this.laneCount) {
       ctx.setLineDash([]);
     } else {
-      ctx.setLineDash([30, 30]);
+      ctx.setLineDash([45, 75]);
     }
   }
 

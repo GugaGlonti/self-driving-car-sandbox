@@ -24,20 +24,20 @@ body {
 /* ------------ */
 
 #controls {
-  width: 35rem;
+  font-size: 0.8rem;
   padding: 2rem;
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
 }
 
 .option {
+  width: 30rem;
   display: flex;
   gap: 2rem;
   margin-bottom: 2rem;
 }
 
 .option label {
-  font-size: 1.2rem;
   width: 8rem;
 }
 

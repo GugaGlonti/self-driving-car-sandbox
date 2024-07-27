@@ -39,7 +39,7 @@ export default class Car implements Controlable {
   public update() {
     this.move();
     this.sensor.update();
-    this.straightenOut();
+    // this.straightenOut();
   }
 
   private straightenOut() {
@@ -57,22 +57,56 @@ export default class Car implements Controlable {
   }
 
   private move() {
+    this.drive();
+    this.turn();
+    this.updatePosition();
+    this.snapToAngle();
+  }
+
+  private updatePosition() {
+    this.x -= Math.sin(this.angle) * this.speed;
+    this.y -= Math.cos(this.angle) * this.speed;
+  }
+
+  private drive() {
     if (this.controls.forward) this.speed += this.acceleration;
     if (this.controls.reverse) this.speed -= this.acceleration;
 
     if (this.speed > this.topSpeed) this.speed = this.topSpeed;
     if (this.speed < -this.reverseSpeed) this.speed = -this.reverseSpeed;
 
-    if (this.speed > 0) this.speed -= this.friction;
-    if (this.speed < 0) this.speed += this.friction;
+    if (this.isNotMoving()) {
+      if (this.speed > 0) this.speed -= this.friction;
+      if (this.speed < 0) this.speed += this.friction;
+    }
+  }
 
-    if (Math.abs(this.speed) < this.friction) this.speed = 0;
+  private turn() {
+    if (this.isNotMoving()) {
+      if (Math.abs(this.speed) < this.friction) this.speed = 0;
+    }
 
     if (this.controls.left) this.angle += this.steeringForce * (this.speed / this.topSpeed);
     if (this.controls.right) this.angle -= this.steeringForce * (this.speed / this.topSpeed);
 
-    this.x -= Math.sin(this.angle) * this.speed;
-    this.y -= Math.cos(this.angle) * this.speed;
+    if (this.angle > Math.PI * 2) this.angle -= Math.PI * 2;
+    if (this.angle < -Math.PI * 2) this.angle += Math.PI * 2;
+  }
+
+  private snapToAngle() {
+    if (this.isNotSteering()) {
+      const snap = Math.PI / 18;
+      const snapAngle = Math.round(this.angle / snap) * snap;
+      this.angle += (snapAngle - this.angle) * this.steeringForce;
+    }
+  }
+
+  private isNotSteering() {
+    return !this.controls.left && !this.controls.right;
+  }
+
+  private isNotMoving() {
+    return !this.controls.forward && !this.controls.reverse;
   }
 
   public draw(ctx: CanvasRenderingContext2D) {
@@ -126,7 +160,7 @@ export default class Car implements Controlable {
         name: 'friction',
         value: this.friction,
         min: 0,
-        max: 0.02,
+        max: 0.1,
         step: 0.001,
         default: 0.01,
       },
