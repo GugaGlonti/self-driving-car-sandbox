@@ -15,7 +15,7 @@ const camrea = new Camera(car, ctx, canvas);
 new ControlPanel(car, car.getParameter('sensor'), road, camrea);
 
 function animate() {
-  car.update();
+  car.update(road.getBorders());
 
   ctx.save();
   camrea.update();

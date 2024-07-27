@@ -1,11 +1,14 @@
-import linspace from './utils/linspace.js';
+import { drawLine, linspace } from './utils/utilFunctions.js';
 import { INF, ROAD_WIDTH, SHOULDER_WIDTH } from './utils/constants.js';
 import { Controlable } from './utils/ControlPanel.js';
+import { Point } from './utils/types.js';
 
 export default class Road implements Controlable {
   private x = window.innerWidth / 2;
   private left = this.x - ROAD_WIDTH / 2 + SHOULDER_WIDTH;
   private right = this.x + ROAD_WIDTH / 2 - SHOULDER_WIDTH;
+
+  private visibleBorders = true;
 
   private top = -INF;
   private bottom = INF;
@@ -17,9 +20,9 @@ export default class Road implements Controlable {
   private bottomleft = { x: this.left, y: this.bottom };
   private bottomright = { x: this.right, y: this.bottom };
 
-  private borders = [
-    [this.topleft, this.topright],
-    [this.bottomleft, this.bottomright],
+  private borders: [Point, Point][] = [
+    [this.topleft, this.bottomleft],
+    [this.topright, this.bottomright],
   ];
 
   constructor(laneCount = 3) {
@@ -32,16 +35,18 @@ export default class Road implements Controlable {
 
     linspace(this.left, this.right, this.laneCount).forEach((x, i) => {
       this.chooseLine(ctx, i);
-      this.drawLine(ctx, x);
+      drawLine(ctx, { x, y: this.top }, { x, y: this.bottom });
     });
 
-    this.borders.forEach(([start, end]) => {
-      ctx.strokeStyle = 'yellow';
-      ctx.beginPath();
-      ctx.moveTo(start.x, start.y);
-      ctx.lineTo(end.x, end.y);
-      ctx.stroke();
-    });
+    if (this.visibleBorders) {
+      this.borders.forEach(([start, end]) => {
+        drawLine(ctx, start, end, 'red');
+      });
+    }
+  }
+
+  public getBorders() {
+    return this.borders;
   }
 
   public getLaneCenter(lane: number) {
@@ -54,13 +59,6 @@ export default class Road implements Controlable {
     } else {
       ctx.setLineDash([45, 75]);
     }
-  }
-
-  private drawLine(ctx: CanvasRenderingContext2D, x: number) {
-    ctx.beginPath();
-    ctx.moveTo(x, this.top);
-    ctx.lineTo(x, this.bottom);
-    ctx.stroke();
   }
 
   // CONTROL PANEL
@@ -89,6 +87,14 @@ export default class Road implements Controlable {
         max: 10,
         step: 1,
         default: 3,
+      },
+      {
+        name: 'visibleBorders',
+        value: this.visibleBorders ? 1 : 0,
+        min: 0,
+        max: 1,
+        step: 1,
+        default: 1,
       },
     ];
   }

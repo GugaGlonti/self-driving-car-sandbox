@@ -1,4 +1,5 @@
 export type Point = { x: number; y: number };
+export type DistancePoint = { x: number; y: number; offset: number };
 
 export type Ray = [Point, Point];
 

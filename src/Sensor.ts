@@ -1,7 +1,7 @@
 import Car from './car.js';
-import linspace from './utils/linspace.js';
+import { linspace, drawLine, getIntersection } from './utils/utilFunctions.js';
 import { Controlable } from './utils/ControlPanel.js';
-import { Parameter, Point, Ray } from './utils/types.js';
+import { DistancePoint, Parameter, Point, Ray } from './utils/types.js';
 
 export default class Sensor implements Controlable {
   private car: Car;
@@ -9,13 +9,42 @@ export default class Sensor implements Controlable {
   private rayCount = 3;
   private rayLength = 100;
   private raySpread = Math.PI / 4;
+
   private rays: Ray[] = [];
+  private readings: (DistancePoint | undefined)[] = [];
 
   constructor(car: Car) {
     this.car = car;
   }
 
-  public update() {
+  public update(borders: [Point, Point][]) {
+    this.castRays();
+    this.updateReadings(borders);
+  }
+
+  private updateReadings(borders: [Point, Point][]) {
+    this.readings = this.rays.map(ray => this.getReading(ray, borders));
+  }
+
+  private getReading(ray: Ray, borders: [Point, Point][]): DistancePoint | undefined {
+    const touchPoints: DistancePoint[] = [];
+    borders.forEach(border => {
+      const touch = getIntersection(ray[0], ray[1], border[0], border[1]);
+      if (touch) {
+        touchPoints.push(touch);
+      }
+    });
+
+    if (!touchPoints.length) {
+      return undefined;
+    }
+
+    const offsets = touchPoints.map(touch => touch.offset);
+    const minimumOffset = Math.min(...offsets);
+    return touchPoints.find(touch => touch.offset === minimumOffset);
+  }
+
+  private castRays() {
     this.rays = [];
     const carAngle = this.car.getAngle();
     const start: Point = this.car.getPosition();
@@ -43,14 +72,16 @@ export default class Sensor implements Controlable {
   }
 
   public draw(ctx: CanvasRenderingContext2D) {
-    ctx.strokeStyle = 'yellow';
     ctx.lineWidth = 1;
 
-    this.rays.forEach(([start, end]) => {
-      ctx.beginPath();
-      ctx.moveTo(start.x, start.y);
-      ctx.lineTo(end.x, end.y);
-      ctx.stroke();
+    this.rays.forEach(([start, end], i) => {
+      const reading = this.readings[i];
+      if (reading) {
+        drawLine(ctx, start, reading, 'yellow');
+        drawLine(ctx, reading, end, 'black');
+      } else {
+        drawLine(ctx, start, end, 'yellow');
+      }
     });
   }
 

@@ -2,7 +2,7 @@ import Controls from './controls.js';
 import Sensor from './sensor.js';
 
 import { Controlable } from './utils/ControlPanel.js';
-import { Parameter } from './utils/types.js';
+import { Parameter, Point } from './utils/types.js';
 
 export default class Car implements Controlable {
   private x = window.innerWidth / 2;
@@ -36,9 +36,9 @@ export default class Car implements Controlable {
     return this.angle;
   }
 
-  public update() {
+  public update(borders: [Point, Point][]) {
     this.move();
-    this.sensor.update();
+    this.sensor.update(borders);
     // this.straightenOut();
   }
 
