@@ -3,7 +3,7 @@ import { INF, ROAD_WIDTH, SHOULDER_WIDTH } from './utils/constants.js';
 import { Controlable } from './utils/ControlPanel.js';
 
 export default class Road implements Controlable {
-  private x = ROAD_WIDTH / 2;
+  private x = window.innerWidth / 2;
   private left = this.x - ROAD_WIDTH / 2 + SHOULDER_WIDTH;
   private right = this.x + ROAD_WIDTH / 2 - SHOULDER_WIDTH;
 

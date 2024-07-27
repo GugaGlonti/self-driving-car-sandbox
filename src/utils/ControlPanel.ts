@@ -9,7 +9,7 @@ export interface Controlable {
 export class ControlPanel {
   private panel: HTMLElement = document.getElementById('controls')!;
   private parameters: Parameter[] = [];
-  private closed = false;
+  private closed = true;
   private controlables: Controlable[] = [];
 
   constructor(...controlables: Controlable[]) {

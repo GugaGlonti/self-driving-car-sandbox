@@ -28,24 +28,26 @@ body {
   padding: 2rem;
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
-}
 
-.option {
-  width: 30rem;
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
+  position: absolute;
 
-.option label {
-  width: 8rem;
-}
+  .option {
+    width: 30rem;
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
 
-button {
-  padding: 10px;
-  margin: 5px;
-  background-color: white;
-  color: black;
-  border: none;
-  cursor: pointer;
+    label {
+      width: 8rem;
+    }
+  }
+
+  button {
+    padding: 10px;
+    margin: 5px;
+    background-color: white;
+    color: black;
+    border: none;
+    cursor: pointer;
+  }
 }

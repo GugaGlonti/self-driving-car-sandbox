@@ -1,6 +1,6 @@
 import Car from './car.js';
-import { Controlable } from './utils/ControlPanel.js';
 import linspace from './utils/linspace.js';
+import { Controlable } from './utils/ControlPanel.js';
 import { Parameter, Point, Ray } from './utils/types.js';
 
 export default class Sensor implements Controlable {
@@ -17,16 +17,28 @@ export default class Sensor implements Controlable {
 
   public update() {
     this.rays = [];
+    const carAngle = this.car.getAngle();
+    const start: Point = this.car.getPosition();
+
+    if (this.rayCount === 1) {
+      return this.rays.push([
+        start,
+        {
+          x: start.x - Math.sin(carAngle) * this.rayLength,
+          y: start.y - Math.cos(carAngle) * this.rayLength,
+        },
+      ]);
+    }
 
     linspace(-this.raySpread / 2, this.raySpread / 2, this.rayCount - 1).forEach(rayAngle => {
-      rayAngle += this.car.getAngle();
-
-      const start: Point = this.car.getPosition();
-      const end: Point = {
-        x: start.x - Math.sin(rayAngle) * this.rayLength,
-        y: start.y - Math.cos(rayAngle) * this.rayLength,
-      };
-      this.rays.push([start, end]);
+      rayAngle += carAngle;
+      return this.rays.push([
+        start,
+        {
+          x: start.x - Math.sin(rayAngle) * this.rayLength,
+          y: start.y - Math.cos(rayAngle) * this.rayLength,
+        },
+      ]);
     });
   }
 
@@ -57,7 +69,7 @@ export default class Sensor implements Controlable {
         name: 'rayLength',
         value: this.rayLength,
         min: 1,
-        max: 500,
+        max: 1000,
         step: 1,
         default: 100,
       },

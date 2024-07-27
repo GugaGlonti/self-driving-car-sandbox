@@ -1,12 +1,12 @@
 import Controls from './controls.js';
 import Sensor from './sensor.js';
-import { ROAD_WIDTH } from './utils/constants.js';
+
 import { Controlable } from './utils/ControlPanel.js';
 import { Parameter } from './utils/types.js';
 
 export default class Car implements Controlable {
-  private x = ROAD_WIDTH / 2;
-  private y = 600;
+  private x = window.innerWidth / 2;
+  private y = 600; // doesn't matter
   private width = 30;
   private height = 50;
 
@@ -86,11 +86,13 @@ export default class Car implements Controlable {
       if (Math.abs(this.speed) < this.friction) this.speed = 0;
     }
 
-    if (this.controls.left) this.angle += this.steeringForce * (this.speed / this.topSpeed);
-    if (this.controls.right) this.angle -= this.steeringForce * (this.speed / this.topSpeed);
+    if (this.speed > 0) {
+      if (this.controls.left) this.angle += this.steeringForce;
+      if (this.controls.right) this.angle -= this.steeringForce;
+    }
 
-    if (this.angle > Math.PI * 2) this.angle -= Math.PI * 2;
-    if (this.angle < -Math.PI * 2) this.angle += Math.PI * 2;
+    if (this.angle > Math.PI) this.angle -= Math.PI * 2;
+    if (this.angle < -Math.PI) this.angle += Math.PI * 2;
   }
 
   private snapToAngle() {
@@ -160,7 +162,7 @@ export default class Car implements Controlable {
         name: 'friction',
         value: this.friction,
         min: 0,
-        max: 0.1,
+        max: 1,
         step: 0.001,
         default: 0.01,
       },
