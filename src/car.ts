@@ -1,8 +1,10 @@
 import Controls from './controls.js';
 import Sensor from './sensor.js';
 import { ROAD_WIDTH } from './utils/constants.js';
+import { Controlable } from './utils/ControlPanel.js';
+import { Parameter } from './utils/types.js';
 
-export default class Car {
+export default class Car implements Controlable {
   private x = ROAD_WIDTH / 2;
   private y = 600;
   private width = 30;
@@ -16,6 +18,9 @@ export default class Car {
   private acceleration = 0.035;
   private friction = 0.01;
 
+  private correction = 0.2;
+  private correctionThreshold = 0.01;
+
   private controls: Controls;
   private sensor = new Sensor(this);
 
@@ -27,7 +32,7 @@ export default class Car {
     return { x: this.x, y: this.y };
   }
 
-  getAngle() {
+  public getAngle() {
     return this.angle;
   }
 
@@ -42,13 +47,13 @@ export default class Car {
       return;
     }
 
-    const CORRECTION = 0.2 * (this.speed / this.topSpeed);
-    const THRESHOLD = 0.01;
+    const factor = this.speed / this.topSpeed;
+    const totalCorrection = this.steeringForce * this.correction * factor;
 
-    if (this.angle > 0) this.angle -= this.steeringForce * CORRECTION;
-    if (this.angle < 0) this.angle += this.steeringForce * CORRECTION;
+    if (this.angle > 0) this.angle -= totalCorrection;
+    if (this.angle < 0) this.angle += totalCorrection;
 
-    if (Math.abs(this.angle) < THRESHOLD) this.angle = 0;
+    if (Math.abs(this.angle) < this.correctionThreshold) this.angle = 0;
   }
 
   private move() {
@@ -80,5 +85,77 @@ export default class Car {
     ctx.restore();
 
     this.sensor.draw(ctx);
+  }
+
+  // CONTROL PANEL
+  public getParameters(): Parameter[] {
+    return [
+      {
+        name: 'steeringForce',
+        value: this.steeringForce,
+        min: 0,
+        max: 0.1,
+        step: 0.001,
+        default: 0.03,
+      },
+      {
+        name: 'topSpeed',
+        value: this.topSpeed,
+        min: 0,
+        max: 100,
+        step: 0.2,
+        default: 3,
+      },
+      {
+        name: 'reverseSpeed',
+        value: this.reverseSpeed,
+        min: 0,
+        max: 10,
+        step: 0.1,
+        default: 2,
+      },
+      {
+        name: 'acceleration',
+        value: this.acceleration,
+        min: 0,
+        max: 1,
+        step: 0.001,
+        default: 0.035,
+      },
+      {
+        name: 'friction',
+        value: this.friction,
+        min: 0,
+        max: 0.02,
+        step: 0.001,
+        default: 0.01,
+      },
+      {
+        name: 'correction',
+        value: this.correction,
+        min: 0,
+        max: 1,
+        step: 0.01,
+        default: 0.2,
+      },
+      {
+        name: 'correctionThreshold',
+        value: this.correctionThreshold,
+        min: 0,
+        max: 0.1,
+        step: 0.001,
+        default: 0.01,
+      },
+    ];
+  }
+
+  public setParameter(param: string, value: number) {
+    // @ts-ignore
+    this[param] = value;
+  }
+
+  public getParameter(param: string) {
+    // @ts-ignore
+    return this[param];
   }
 }

@@ -1,7 +1,8 @@
 import linspace from './utils/linspace.js';
 import { INF, ROAD_WIDTH, SHOULDER_WIDTH } from './utils/constants.js';
+import { Controlable } from './utils/ControlPanel.js';
 
-export default class Road {
+export default class Road implements Controlable {
   private x = ROAD_WIDTH / 2;
   private left = this.x - ROAD_WIDTH / 2 + SHOULDER_WIDTH;
   private right = this.x + ROAD_WIDTH / 2 - SHOULDER_WIDTH;
@@ -60,5 +61,45 @@ export default class Road {
     ctx.moveTo(x, this.top);
     ctx.lineTo(x, this.bottom);
     ctx.stroke();
+  }
+
+  // CONTROL PANEL
+  public getParameters() {
+    return [
+      {
+        name: 'left',
+        value: this.left,
+        min: 0,
+        max: window.innerWidth,
+        step: 10,
+        default: ROAD_WIDTH / 2 - SHOULDER_WIDTH,
+      },
+      {
+        name: 'right',
+        value: this.right,
+        min: 0,
+        max: window.innerWidth,
+        step: 10,
+        default: ROAD_WIDTH / 2 + SHOULDER_WIDTH,
+      },
+      {
+        name: 'laneCount',
+        value: this.laneCount,
+        min: 1,
+        max: 10,
+        step: 1,
+        default: 3,
+      },
+    ];
+  }
+
+  public setParameter(param: string, value: number) {
+    // @ts-ignore
+    this[param] = value;
+  }
+
+  public getParameter(param: string): number {
+    // @ts-ignore
+    return this[param];
   }
 }

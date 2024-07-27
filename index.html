@@ -10,8 +10,13 @@
       href="./src/styles.css" />
     <title>Self Driving Car Simulation - No Libraries</title>
   </head>
+
   <body>
-    <canvas id="canvas" />
+    <main style="position: relative; width: 100vw; display: flex; justify-content: space-between">
+      <div id="controls"></div>
+      <canvas id="canvas"></canvas>
+      <div style="width: 20vw" />
+    </main>
     <script
       type="module"
       src="./dist/index.js"></script>

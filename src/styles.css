@@ -18,3 +18,34 @@ body {
 #canvas {
   background-color: #7d8087;
 }
+
+/* ------------ */
+/* CONTOL PANEL */
+/* ------------ */
+
+#controls {
+  width: 35rem;
+  padding: 2rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+.option {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.option label {
+  font-size: 1.2rem;
+  width: 8rem;
+}
+
+button {
+  padding: 10px;
+  margin: 5px;
+  background-color: white;
+  color: black;
+  border: none;
+  cursor: pointer;
+}
