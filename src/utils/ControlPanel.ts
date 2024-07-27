@@ -6,7 +6,7 @@ export interface Controlable {
   getParameters(): Parameter[];
 }
 
-export class ControlPanel {
+export default class ControlPanel {
   private panel: HTMLElement = document.getElementById('controls')!;
   private parameters: Parameter[] = [];
   private closed = true;
