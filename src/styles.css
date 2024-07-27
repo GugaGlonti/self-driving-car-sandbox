@@ -6,7 +6,7 @@
 
 body {
   font-family: 'Roboto', sans-serif;
-  background-color: #2b2d42;
+  background-color: #535353;
   -webkit-font-smoothing: antialiased;
 
   overflow: hidden;
@@ -16,5 +16,5 @@ body {
 }
 
 #canvas {
-  background-color: #8d99ae;
+  background-color: #7d8087;
 }

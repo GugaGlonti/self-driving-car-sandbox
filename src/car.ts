@@ -1,5 +1,5 @@
 import Controls from './controls.js';
-
+import Sensor from './sensor.js';
 import { ROAD_WIDTH } from './utils/constants.js';
 
 export default class Car {
@@ -17,13 +17,38 @@ export default class Car {
   private friction = 0.01;
 
   private controls: Controls;
+  private sensor = new Sensor(this);
 
   constructor(controls: Controls) {
     this.controls = controls;
   }
 
+  public getPosition() {
+    return { x: this.x, y: this.y };
+  }
+
+  getAngle() {
+    return this.angle;
+  }
+
   public update() {
     this.move();
+    this.sensor.update();
+    this.straightenOut();
+  }
+
+  private straightenOut() {
+    if (this.speed <= 1) {
+      return;
+    }
+
+    const CORRECTION = 0.2 * (this.speed / this.topSpeed);
+    const THRESHOLD = 0.01;
+
+    if (this.angle > 0) this.angle -= this.steeringForce * CORRECTION;
+    if (this.angle < 0) this.angle += this.steeringForce * CORRECTION;
+
+    if (Math.abs(this.angle) < THRESHOLD) this.angle = 0;
   }
 
   private move() {
@@ -53,5 +78,7 @@ export default class Car {
     ctx.rect(-this.width / 2, -this.height / 2, this.width, this.height);
     ctx.fill();
     ctx.restore();
+
+    this.sensor.draw(ctx);
   }
 }
