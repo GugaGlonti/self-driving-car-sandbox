@@ -1,4 +1,4 @@
-import { DistancePoint, Point } from './types.js';
+import { DistancePoint, Point, Polygon } from './types.js';
 
 /**
  * Generate a linearly spaced array of numbers
@@ -67,4 +67,27 @@ export function getIntersection(A: Point, B: Point, C: Point, D: Point): Distanc
       };
     }
   }
+}
+
+/**
+ * Check if two polygons intersect
+ * @param  poly1 first polygon
+ * @param poly2 second polygon
+ * @returns true if polygons intersect
+ */
+export function polysIntersect(P1: Polygon, P2: Polygon): boolean {
+  for (let i = 0; i < P1.length; i++) {
+    for (let j = 0; j < P2.length; j++) {
+      // prettier-ignore
+      if (getIntersection(
+        P1[i],
+        P1[(i + 1) % P1.length],
+        P2[j],
+        P2[(j + 1) % P2.length])
+      ) {
+        return true;
+      }
+    }
+  }
+  return false;
 }

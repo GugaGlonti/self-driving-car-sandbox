@@ -6,8 +6,12 @@ export default class Controls {
   public left = false;
   public right = false;
 
-  constructor() {
-    this.addKeyListeners();
+  constructor(isPlayer: boolean) {
+    if (isPlayer) {
+      this.addKeyListeners();
+    } else {
+      this.forward = true;
+    }
   }
 
   private addKeyListeners() {

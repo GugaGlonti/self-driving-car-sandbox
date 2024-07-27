@@ -1,7 +1,7 @@
 import { drawLine, linspace } from './utils/utilFunctions.js';
 import { INF, ROAD_WIDTH, SHOULDER_WIDTH } from './utils/constants.js';
 import { Controlable } from './utils/ControlPanel.js';
-import { Point } from './utils/types.js';
+import { Line } from './utils/types.js';
 
 export default class Road implements Controlable {
   private x = window.innerWidth / 2;
@@ -20,7 +20,7 @@ export default class Road implements Controlable {
   private bottomleft = { x: this.left, y: this.bottom };
   private bottomright = { x: this.right, y: this.bottom };
 
-  private borders: [Point, Point][] = [
+  private borders: Line[] = [
     [this.topleft, this.bottomleft],
     [this.topright, this.bottomright],
   ];

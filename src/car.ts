@@ -2,13 +2,14 @@ import Controls from './controls.js';
 import Sensor from './sensor.js';
 
 import { Controlable } from './utils/ControlPanel.js';
-import { Parameter, Point } from './utils/types.js';
+import { Line, Parameter, Polygon } from './utils/types.js';
+import { polysIntersect } from './utils/utilFunctions.js';
 
 export default class Car implements Controlable {
-  private x = window.innerWidth / 2;
-  private y = 600; // doesn't matter
-  private width = 30;
-  private height = 50;
+  private x: number;
+  private y: number;
+  private width: number;
+  private height: number;
 
   private angle = 0;
   private steeringForce = 0.03;
@@ -22,10 +23,24 @@ export default class Car implements Controlable {
   private correctionThreshold = 0.01;
 
   private controls: Controls;
-  private sensor = new Sensor(this);
+  private sensor: Sensor = new Sensor(this);
 
-  constructor(controls: Controls) {
-    this.controls = controls;
+  private polygon: Polygon = this.createPolygon();
+  private damaged = false;
+
+  // prettier-ignore
+  constructor(
+    x: number = window.innerWidth / 2,
+    y: number = 600,
+    width: number = 30,
+    height: number = 50,
+    isPlayer: boolean = false
+  ) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.controls = new Controls(isPlayer);
   }
 
   public getPosition() {
@@ -36,24 +51,50 @@ export default class Car implements Controlable {
     return this.angle;
   }
 
-  public update(borders: [Point, Point][]) {
-    this.move();
-    this.sensor.update(borders);
-    // this.straightenOut();
-  }
-
-  private straightenOut() {
-    if (this.speed <= 1) {
-      return;
+  public update(borders: Line[]) {
+    if (!this.damaged) {
+      this.move();
     }
 
-    const factor = this.speed / this.topSpeed;
-    const totalCorrection = this.steeringForce * this.correction * factor;
+    this.polygon = this.createPolygon();
+    this.damaged = this.assessDamage(borders);
+    this.sensor.update(borders);
+  }
 
-    if (this.angle > 0) this.angle -= totalCorrection;
-    if (this.angle < 0) this.angle += totalCorrection;
+  private assessDamage(borders: Line[]) {
+    for (let i = 0; i < borders.length; i++) {
+      if (polysIntersect(this.polygon, borders[i])) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-    if (Math.abs(this.angle) < this.correctionThreshold) this.angle = 0;
+  private createPolygon() {
+    const rad = Math.hypot(this.width, this.height) / 2;
+    const alpha = Math.atan2(this.width, this.height);
+
+    const { x, y } = this.getPosition();
+    let angle = this.getAngle();
+
+    return [
+      {
+        x: x - Math.sin(angle - alpha) * rad,
+        y: y - Math.cos(angle - alpha) * rad,
+      },
+      {
+        x: x - Math.sin(angle + alpha) * rad,
+        y: y - Math.cos(angle + alpha) * rad,
+      },
+      {
+        x: x - Math.sin(angle + Math.PI - alpha) * rad,
+        y: y - Math.cos(angle + Math.PI - alpha) * rad,
+      },
+      {
+        x: x - Math.sin(angle + Math.PI + alpha) * rad,
+        y: y - Math.cos(angle + Math.PI + alpha) * rad,
+      },
+    ];
   }
 
   private move() {
@@ -91,6 +132,11 @@ export default class Car implements Controlable {
       if (this.controls.right) this.angle -= this.steeringForce;
     }
 
+    if (this.speed < 0) {
+      if (this.controls.left) this.angle -= this.steeringForce;
+      if (this.controls.right) this.angle += this.steeringForce;
+    }
+
     if (this.angle > Math.PI) this.angle -= Math.PI * 2;
     if (this.angle < -Math.PI) this.angle += Math.PI * 2;
   }
@@ -112,13 +158,18 @@ export default class Car implements Controlable {
   }
 
   public draw(ctx: CanvasRenderingContext2D) {
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    ctx.rotate(-this.angle);
-    ctx.beginPath();
-    ctx.rect(-this.width / 2, -this.height / 2, this.width, this.height);
-    ctx.fill();
-    ctx.restore();
+    if (this.damaged) ctx.fillStyle = 'red';
+    else ctx.fillStyle = 'white';
+
+    try {
+      ctx.beginPath();
+      const { x, y } = this.polygon.pop()!;
+      ctx.moveTo(x, y);
+      this.polygon.forEach(point => ctx.lineTo(point.x, point.y));
+      ctx.fill();
+    } catch (error) {
+      console.error('Error drawing car', error);
+    }
 
     this.sensor.draw(ctx);
   }

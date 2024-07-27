@@ -1,7 +1,7 @@
 import Car from './car.js';
 import { linspace, drawLine, getIntersection } from './utils/utilFunctions.js';
 import { Controlable } from './utils/ControlPanel.js';
-import { DistancePoint, Parameter, Point, Ray } from './utils/types.js';
+import { DistancePoint, Parameter, Point, Line } from './utils/types.js';
 
 export default class Sensor implements Controlable {
   private car: Car;
@@ -10,23 +10,23 @@ export default class Sensor implements Controlable {
   private rayLength = 100;
   private raySpread = Math.PI / 4;
 
-  private rays: Ray[] = [];
+  private rays: Line[] = [];
   private readings: (DistancePoint | undefined)[] = [];
 
   constructor(car: Car) {
     this.car = car;
   }
 
-  public update(borders: [Point, Point][]) {
+  public update(borders: Line[]) {
     this.castRays();
     this.updateReadings(borders);
   }
 
-  private updateReadings(borders: [Point, Point][]) {
+  private updateReadings(borders: Line[]) {
     this.readings = this.rays.map(ray => this.getReading(ray, borders));
   }
 
-  private getReading(ray: Ray, borders: [Point, Point][]): DistancePoint | undefined {
+  private getReading(ray: Line, borders: Line[]): DistancePoint | undefined {
     const touchPoints: DistancePoint[] = [];
     borders.forEach(border => {
       const touch = getIntersection(ray[0], ray[1], border[0], border[1]);

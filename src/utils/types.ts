@@ -1,7 +1,7 @@
 export type Point = { x: number; y: number };
 export type DistancePoint = { x: number; y: number; offset: number };
-
-export type Ray = [Point, Point];
+export type Line = [Point, Point];
+export type Polygon = Point[];
 
 export type Parameter = {
   name: string;
