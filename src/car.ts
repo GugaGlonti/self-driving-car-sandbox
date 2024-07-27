@@ -1,5 +1,6 @@
 import Controls from './controls.js';
 import Sensor from './sensor.js';
+import { ACCELERATION, DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_X, DEFAULT_Y, FRICTION, REVERSE_SPEED, STEERING_FORCE, TOP_SPEED } from './utils/constants.js';
 
 import { Controlable } from './utils/ControlPanel.js';
 import { Line, Parameter, Polygon } from './utils/types.js';
@@ -12,15 +13,12 @@ export default class Car implements Controlable {
   private height: number;
 
   private angle = 0;
-  private steeringForce = 0.03;
+  private steeringForce = STEERING_FORCE;
   private speed = 0;
-  private topSpeed = 3;
-  private reverseSpeed = 2;
-  private acceleration = 0.035;
-  private friction = 0.01;
-
-  private correction = 0.2;
-  private correctionThreshold = 0.01;
+  private topSpeed = TOP_SPEED;
+  private reverseSpeed = REVERSE_SPEED;
+  private acceleration = ACCELERATION;
+  private friction = FRICTION;
 
   private controls: Controls;
   private sensor: Sensor = new Sensor(this);
@@ -30,10 +28,10 @@ export default class Car implements Controlable {
 
   // prettier-ignore
   constructor(
-    x: number = window.innerWidth / 2,
-    y: number = 600,
-    width: number = 30,
-    height: number = 50,
+    x: number = DEFAULT_X,
+    y: number = DEFAULT_Y,
+    width: number = DEFAULT_WIDTH,
+    height: number = DEFAULT_HEIGHT,
     isPlayer: boolean = false
   ) {
     this.x = x;
@@ -183,7 +181,7 @@ export default class Car implements Controlable {
         min: 0,
         max: 0.1,
         step: 0.001,
-        default: 0.03,
+        default: STEERING_FORCE,
       },
       {
         name: 'topSpeed',
@@ -191,7 +189,7 @@ export default class Car implements Controlable {
         min: 0,
         max: 100,
         step: 0.2,
-        default: 3,
+        default: TOP_SPEED,
       },
       {
         name: 'reverseSpeed',
@@ -199,7 +197,7 @@ export default class Car implements Controlable {
         min: 0,
         max: 10,
         step: 0.1,
-        default: 2,
+        default: REVERSE_SPEED,
       },
       {
         name: 'acceleration',
@@ -207,7 +205,7 @@ export default class Car implements Controlable {
         min: 0,
         max: 1,
         step: 0.001,
-        default: 0.035,
+        default: ACCELERATION,
       },
       {
         name: 'friction',
@@ -215,23 +213,7 @@ export default class Car implements Controlable {
         min: 0,
         max: 1,
         step: 0.001,
-        default: 0.01,
-      },
-      {
-        name: 'correction',
-        value: this.correction,
-        min: 0,
-        max: 1,
-        step: 0.01,
-        default: 0.2,
-      },
-      {
-        name: 'correctionThreshold',
-        value: this.correctionThreshold,
-        min: 0,
-        max: 0.1,
-        step: 0.001,
-        default: 0.01,
+        default: FRICTION,
       },
     ];
   }

@@ -2,7 +2,7 @@ import ControlPanel from './utils/ControlPanel.js';
 import Camera from './Camera.js';
 import Car from './car.js';
 import Road from './road.js';
-import { Player } from './utils/Player.js';
+import Player from './utils/Player.js';
 
 const canvas = document.getElementById('canvas')! as HTMLCanvasElement;
 const ctx = canvas.getContext('2d')!;

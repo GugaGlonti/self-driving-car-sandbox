@@ -1,4 +1,5 @@
 import Car from './car.js';
+import { LOWER_BOUND, UPPER_BOUND } from './utils/constants.js';
 import { Controlable } from './utils/ControlPanel.js';
 import { Parameter } from './utils/types.js';
 
@@ -7,8 +8,8 @@ export default class Camera implements Controlable {
   private ctx: CanvasRenderingContext2D;
   private canvas: HTMLCanvasElement;
 
-  private upperBound = 0.2;
-  private lowerBound = 0.8;
+  private upperBound = UPPER_BOUND;
+  private lowerBound = LOWER_BOUND;
 
   constructor(car: Car, ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
     this.car = car;
@@ -69,7 +70,7 @@ export default class Camera implements Controlable {
         min: 0,
         max: 1,
         step: 0.01,
-        default: 0.2,
+        default: UPPER_BOUND,
       },
       {
         name: 'lowerBound',
@@ -77,7 +78,7 @@ export default class Camera implements Controlable {
         min: 0,
         max: 1,
         step: 0.01,
-        default: 0.8,
+        default: LOWER_BOUND,
       },
     ];
   }

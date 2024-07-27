@@ -2,13 +2,14 @@ import Car from './car.js';
 import { linspace, drawLine, getIntersection } from './utils/utilFunctions.js';
 import { Controlable } from './utils/ControlPanel.js';
 import { DistancePoint, Parameter, Point, Line } from './utils/types.js';
+import { RAY_COUNT, RAY_LENGTH, RAY_SPREAD } from './utils/constants.js';
 
 export default class Sensor implements Controlable {
   private car: Car;
 
-  private rayCount = 3;
-  private rayLength = 100;
-  private raySpread = Math.PI / 4;
+  private rayCount = RAY_COUNT;
+  private rayLength = RAY_LENGTH;
+  private raySpread = RAY_SPREAD;
 
   private rays: Line[] = [];
   private readings: (DistancePoint | undefined)[] = [];
@@ -94,7 +95,7 @@ export default class Sensor implements Controlable {
         min: 1,
         max: 100,
         step: 1,
-        default: 3,
+        default: RAY_COUNT,
       },
       {
         name: 'rayLength',
@@ -102,7 +103,7 @@ export default class Sensor implements Controlable {
         min: 1,
         max: 1000,
         step: 1,
-        default: 100,
+        default: RAY_LENGTH,
       },
       {
         name: 'raySpread',
@@ -110,7 +111,7 @@ export default class Sensor implements Controlable {
         min: 0,
         max: Math.PI * 2,
         step: 0.1,
-        default: Math.PI / 4,
+        default: RAY_SPREAD,
       },
     ];
   }

@@ -1,12 +1,11 @@
 import { drawLine, linspace } from './utils/utilFunctions.js';
-import { INF, ROAD_WIDTH, SHOULDER_WIDTH } from './utils/constants.js';
+import { INF, LANE_COUNT, ROAD_LEFT, ROAD_RIGHT, VISIBLE_BORDERS } from './utils/constants.js';
 import { Controlable } from './utils/ControlPanel.js';
 import { Line } from './utils/types.js';
 
 export default class Road implements Controlable {
-  private x = window.innerWidth / 2;
-  private left = this.x - ROAD_WIDTH / 2 + SHOULDER_WIDTH;
-  private right = this.x + ROAD_WIDTH / 2 - SHOULDER_WIDTH;
+  private left = ROAD_LEFT;
+  private right = ROAD_RIGHT;
 
   private top = -INF;
   private bottom = INF;
@@ -82,7 +81,7 @@ export default class Road implements Controlable {
         min: 0,
         max: window.innerWidth,
         step: 10,
-        default: ROAD_WIDTH / 2 - SHOULDER_WIDTH,
+        default: ROAD_LEFT,
       },
       {
         name: 'right',
@@ -90,7 +89,7 @@ export default class Road implements Controlable {
         min: 0,
         max: window.innerWidth,
         step: 10,
-        default: ROAD_WIDTH / 2 + SHOULDER_WIDTH,
+        default: ROAD_RIGHT,
       },
       {
         name: 'laneCount',
@@ -98,7 +97,7 @@ export default class Road implements Controlable {
         min: 1,
         max: 10,
         step: 1,
-        default: 3,
+        default: LANE_COUNT,
       },
       {
         name: 'visibleBorders',
@@ -106,7 +105,7 @@ export default class Road implements Controlable {
         min: 0,
         max: 1,
         step: 1,
-        default: 1,
+        default: VISIBLE_BORDERS,
       },
     ];
   }
