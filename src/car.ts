@@ -1,6 +1,6 @@
 import Controls from './controls.js';
 import Sensor from './sensor.js';
-import { ACCELERATION, DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_X, DEFAULT_Y, FRICTION, REVERSE_SPEED, STEERING_FORCE, TOP_SPEED } from './utils/constants.js';
+import { ACCELERATION, CPU_TOP_SPEED, DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_X, DEFAULT_Y, FRICTION, REVERSE_SPEED, STEERING_FORCE, TOP_SPEED } from './utils/constants.js';
 
 import { Controlable } from './utils/ControlPanel.js';
 import { Line, Parameter, Polygon } from './utils/types.js';
@@ -21,7 +21,7 @@ export default class Car implements Controlable {
   private friction = FRICTION;
 
   private controls: Controls;
-  private sensor: Sensor = new Sensor(this);
+  private sensor: Sensor | undefined = new Sensor(this);
 
   private polygon: Polygon = this.createPolygon();
   private damaged = false;
@@ -39,6 +39,11 @@ export default class Car implements Controlable {
     this.width = width;
     this.height = height;
     this.controls = new Controls(isPlayer);
+
+    if (!isPlayer) {
+      this.sensor = undefined;
+      this.topSpeed = CPU_TOP_SPEED;
+    }
   }
 
   public getPosition() {
@@ -56,7 +61,10 @@ export default class Car implements Controlable {
 
     this.polygon = this.createPolygon();
     this.damaged = this.assessDamage(borders);
-    this.sensor.update(borders);
+
+    if (this.sensor) {
+      this.sensor.update(borders);
+    }
   }
 
   private assessDamage(borders: Line[]) {
@@ -169,7 +177,9 @@ export default class Car implements Controlable {
       console.error('Error drawing car', error);
     }
 
-    this.sensor.draw(ctx);
+    if (this.sensor) {
+      this.sensor.draw(ctx);
+    }
   }
 
   // CONTROL PANEL

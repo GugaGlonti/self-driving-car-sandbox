@@ -19,6 +19,9 @@ export const REVERSE_SPEED = 2;
 export const ACCELERATION = 0.035;
 export const FRICTION = 0.01;
 
+// CPU CAR
+export const CPU_TOP_SPEED = 2;
+
 // CAMERA
 export const UPPER_BOUND = 0.2;
 export const LOWER_BOUND = 0.8;
