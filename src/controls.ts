@@ -3,9 +3,9 @@ import { ControlType } from './utils/types.js';
 
 export default class Controls {
   public forward = false;
-  public reverse = false;
   public left = false;
   public right = false;
+  public reverse = false;
 
   constructor(controlType: ControlType) {
     switch (controlType) {
@@ -20,20 +20,24 @@ export default class Controls {
     }
   }
 
+  public setControls(controls: number[]) {
+    [this.forward, this.left, this.right, this.reverse] = controls.map(c => (!!c ? true : false));
+  }
+
   private addKeyListeners(): void {
     document.addEventListener('keydown', event => {
       switch (event.key) {
         case UP:
           this.forward = true;
           break;
-        case DOWN:
-          this.reverse = true;
-          break;
         case LEFT:
           this.left = true;
           break;
         case RIGHT:
           this.right = true;
+          break;
+        case DOWN:
+          this.reverse = true;
           break;
       }
     });
@@ -43,14 +47,14 @@ export default class Controls {
         case UP:
           this.forward = false;
           break;
-        case DOWN:
-          this.reverse = false;
-          break;
         case LEFT:
           this.left = false;
           break;
         case RIGHT:
           this.right = false;
+          break;
+        case DOWN:
+          this.reverse = false;
           break;
       }
     });

@@ -69,9 +69,11 @@ export default class Car implements Controlable, Colidable {
     this.polygon = this.createPolygon();
     this.damaged = this.assessDamage(hitbox);
 
-    if (this.sensor) {
+    if (this.sensor && this.neuralNetwork) {
       this.sensor.update(hitbox);
-      console.log(this.neuralNetwork?.feedForward(this.sensor.getReadings()));
+      const outputs = this.neuralNetwork.feedForward(this.sensor.getReadings());
+      this.controls.setControls(outputs);
+      console.log(outputs);
     }
   }
 
