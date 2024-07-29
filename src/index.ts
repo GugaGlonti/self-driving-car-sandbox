@@ -8,14 +8,17 @@ import Car from './Car.js';
 import Traffic from './Traffic.js';
 import AICar from './AICar.js';
 
-const canvas = document.getElementById('canvas')! as HTMLCanvasElement;
-const ctx = canvas.getContext('2d')!;
+const carCanvas = document.getElementById('canvas')! as HTMLCanvasElement;
+const ctx = carCanvas.getContext('2d')!;
+
+const nnCanvas = document.getElementById('nn-canvas')! as HTMLCanvasElement;
+const nnCtx = nnCanvas.getContext('2d')!;
 
 const road = new Road();
 const traffic = new Traffic([new Car()]);
 const player = new AICar();
 
-const camrea = new Camera(player, ctx, canvas);
+const camrea = new Camera(player, ctx, carCanvas, nnCtx, nnCanvas);
 
 new ControlPanel(player, player.getParameter('sensor'), road, camrea);
 

@@ -1,11 +1,12 @@
 import { drawLine, linspace } from './utils/utilFunctions.js';
-import { INF, LANE_COUNT, ROAD_LEFT, ROAD_RIGHT, VISIBLE_BORDERS } from './utils/constants.js';
+import { INF, LANE_COUNT, ROAD_LEFT, ROAD_RIGHT, SHOULDER_WIDTH, VISIBLE_BORDERS } from './utils/constants.js';
 import { Controlable } from './utils/ControlPanel.js';
 import { Colidable, Line, Parameter } from './utils/types.js';
 
 export default class Road implements Controlable, Colidable {
   private left = ROAD_LEFT;
   private right = ROAD_RIGHT;
+  private shoulderWidth = SHOULDER_WIDTH;
 
   private top = -INF;
   private bottom = INF;
@@ -24,7 +25,7 @@ export default class Road implements Controlable, Colidable {
     [this.topright, this.bottomright],
   ];
 
-  constructor(laneCount = 3) {
+  constructor(laneCount = LANE_COUNT) {
     this.laneCount = laneCount;
   }
   public getHitbox(): Line[] {
@@ -32,6 +33,9 @@ export default class Road implements Controlable, Colidable {
   }
 
   public draw(ctx: CanvasRenderingContext2D): void {
+    ctx.fillStyle = 'gray';
+    ctx.fillRect(this.left - this.shoulderWidth, this.top, this.right - this.left + this.shoulderWidth * 2, this.bottom - this.top);
+
     ctx.strokeStyle = 'white';
     ctx.lineWidth = 5;
 

@@ -56,7 +56,7 @@ export default class Car implements Controlable, Colidable {
       case 'CPU':
         this.sensor = undefined;
         this.topSpeed = CPU_TOP_SPEED;
-        this.y = -100;
+        this.y = +300;
         break;
     }
   }
@@ -73,8 +73,11 @@ export default class Car implements Controlable, Colidable {
       this.sensor.update(hitbox);
       const outputs = this.neuralNetwork.feedForward(this.sensor.getReadings());
       this.controls.setControls(outputs);
-      console.log(outputs);
     }
+  }
+
+  public getNeuralNetwork(): NeuralNetwork {
+    return this.neuralNetwork!;
   }
 
   private assessDamage(hitbox: Line[]): boolean {

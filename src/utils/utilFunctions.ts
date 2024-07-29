@@ -162,3 +162,18 @@ export function forEachOfMany(arrays: any[][], callback: OfManyCallback) {
     }
   }
 }
+
+/**
+ *  RGB to RGBA string
+ * @param value number between -1 and 1
+ * @returns rgba string
+ * @example
+ * getRGBA(0.5) // "rgba(255,255,0,0.5)"
+ */
+export function getRGBA(value: number): string {
+  const alpha = Math.abs(value);
+  const R = value < 0 ? 0 : 255;
+  const G = R;
+  const B = value > 0 ? 0 : 255;
+  return 'rgba(' + R + ',' + G + ',' + B + ',' + alpha + ')';
+}

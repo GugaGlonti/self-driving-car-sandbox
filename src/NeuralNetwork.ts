@@ -18,4 +18,8 @@ export default class NeuralNetwork {
 
     return outputs;
   }
+
+  public getLayers() {
+    return this.layers;
+  }
 }

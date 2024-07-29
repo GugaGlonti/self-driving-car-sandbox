@@ -16,7 +16,11 @@ body {
 }
 
 #canvas {
-  background-color: #7d8087;
+  background-color: #383838;
+}
+
+#nn-canvas {
+  background-color: #000;
 }
 
 /* ------------ */

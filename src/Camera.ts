@@ -2,36 +2,51 @@ import Car from './Car.js';
 import { LOWER_BOUND, UPPER_BOUND } from './utils/constants.js';
 import { Controlable } from './utils/ControlPanel.js';
 import { Parameter } from './utils/types.js';
+import Visualizer from './Visualizer.js';
 
 export default class Camera implements Controlable {
   private car: Car;
-  private ctx: CanvasRenderingContext2D;
-  private canvas: HTMLCanvasElement;
+  private carCtx: CanvasRenderingContext2D;
+  private carCanvas: HTMLCanvasElement;
+
+  private nnCtx: CanvasRenderingContext2D;
+  private nnCanvas: HTMLCanvasElement;
 
   private upperBound = UPPER_BOUND;
   private lowerBound = LOWER_BOUND;
 
-  constructor(car: Car, ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
+  constructor(car: Car, ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, nnCtx: CanvasRenderingContext2D, nnCanvas: HTMLCanvasElement) {
+    this.carCanvas = canvas;
+    this.carCtx = ctx;
+    this.nnCanvas = nnCanvas;
+    this.nnCtx = nnCtx;
+
     this.car = car;
-    this.ctx = ctx;
-    this.canvas = canvas;
   }
 
   public update(): void {
     this.resizeCanvas();
 
-    this.ctx.save();
+    this.carCtx.save();
     const factor = Math.abs(this.car.getAngle()) / Math.PI;
     const yTranslation = (window.innerHeight / 2) * this.easeInOut(this.convertRange(factor));
 
     const { x, y } = this.car.getPosition();
-    this.ctx.translate(-x + window.innerWidth / 2, -y + window.innerHeight * 0.75 - yTranslation);
+    const { width, height } = this.carCanvas;
+
+    this.carCtx.translate(width / 2 - x, height * (3 / 4) - y - yTranslation);
+
+    Visualizer.drawNetwork(this.nnCtx, this.car.getNeuralNetwork());
   }
 
   private resizeCanvas(): void {
-    // CSS might be faster
-    this.canvas.height = window.innerHeight;
-    this.canvas.width = window.innerWidth;
+    console.log(this.carCanvas.width, this.carCanvas.height, this.nnCanvas.width, this.nnCanvas.height);
+
+    this.carCanvas.width = window.innerWidth / 2;
+    this.carCanvas.height = window.innerHeight;
+
+    this.nnCanvas.width = window.innerWidth / 2;
+    this.nnCanvas.height = window.innerHeight;
   }
 
   /**

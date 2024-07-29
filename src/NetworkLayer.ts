@@ -12,6 +12,15 @@ export default class NetworkLayer {
     this.randomizeLayer();
   }
 
+  public getPackedData() {
+    return {
+      inputs: this.inputs,
+      outputs: this.outputs,
+      biases: this.biases,
+      weights: this.weights,
+    };
+  }
+
   public feedForward(inputs: number[]) {
     this.inputs = inputs;
 
