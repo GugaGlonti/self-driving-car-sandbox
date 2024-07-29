@@ -1,32 +1,36 @@
-import ControlPanel from './utils/ControlPanel.js';
 import Camera from './Camera.js';
-import Car from './car.js';
-import Road from './road.js';
+
+import Road from './Road.js';
 import Player from './utils/Player.js';
+
+import ControlPanel from './utils/ControlPanel.js';
+import Car from './Car.js';
+import Traffic from './Traffic.js';
+import { forEachOfBoth, mapEachOfBoth } from './utils/utilFunctions.js';
 
 const canvas = document.getElementById('canvas')! as HTMLCanvasElement;
 const ctx = canvas.getContext('2d')!;
 
 const road = new Road();
+const traffic = new Traffic([new Car()]);
 const player = new Player();
-
-const traffic = [new Car()];
 
 const camrea = new Camera(player, ctx, canvas);
 
 new ControlPanel(player, player.getParameter('sensor'), road, camrea);
 
-function animate() {
+function animate(): void {
   // update
-  player.update(road.getBorders());
-  traffic.forEach(car => car.update(road.getBorders()));
+  traffic.update(...road.getHitbox()); // ...player.getHitbox());
+  player.update(...road.getHitbox(), ...traffic.getHitbox());
+
   ctx.save();
   camrea.update();
 
   // draw
   road.draw(ctx);
+  traffic.draw(ctx);
   player.draw(ctx);
-  traffic.forEach(car => car.draw(ctx));
 
   // restore
   ctx.restore();

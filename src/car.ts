@@ -1,12 +1,12 @@
-import Controls from './controls.js';
-import Sensor from './sensor.js';
+import Controls from './Controls.js';
+import Sensor from './Sensor.js';
 import { ACCELERATION, CPU_TOP_SPEED, DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_X, DEFAULT_Y, FRICTION, REVERSE_SPEED, STEERING_FORCE, TOP_SPEED } from './utils/constants.js';
 
 import { Controlable } from './utils/ControlPanel.js';
-import { Line, Parameter, Polygon } from './utils/types.js';
+import { Colidable, Line, Parameter, Point, Polygon } from './utils/types.js';
 import { polysIntersect } from './utils/utilFunctions.js';
 
-export default class Car implements Controlable {
+export default class Car implements Controlable, Colidable {
   private x: number;
   private y: number;
   private width: number;
@@ -43,40 +43,54 @@ export default class Car implements Controlable {
     if (!isPlayer) {
       this.sensor = undefined;
       this.topSpeed = CPU_TOP_SPEED;
+      this.y = -100;
     }
   }
-
-  public getPosition() {
+  public getPosition(): Point {
     return { x: this.x, y: this.y };
   }
 
-  public getAngle() {
+  public getAngle(): number {
     return this.angle;
   }
 
-  public update(borders: Line[]) {
+  public getHitbox(): Line[] {
+    return this.polygonToLines(this.polygon);
+  }
+
+  private polygonToLines(polygon: Polygon): Line[] {
+    return polygon.map((point, i) => {
+      return [point, polygon[(i + 1) % polygon.length]];
+    }) as Line[];
+  }
+
+  public update(...hitbox: Line[]): void {
     if (!this.damaged) {
       this.move();
     }
 
     this.polygon = this.createPolygon();
-    this.damaged = this.assessDamage(borders);
+    this.damaged = this.assessDamage(hitbox);
 
     if (this.sensor) {
-      this.sensor.update(borders);
+      this.sensor.update(hitbox);
     }
   }
 
-  private assessDamage(borders: Line[]) {
-    for (let i = 0; i < borders.length; i++) {
-      if (polysIntersect(this.polygon, borders[i])) {
+  private assessDamage(hitbox: Line[]): boolean {
+    if (this.damaged) {
+      return true;
+    }
+
+    for (let i = 0; i < hitbox.length; i++) {
+      if (polysIntersect(this.polygon, hitbox[i])) {
         return true;
       }
     }
     return false;
   }
 
-  private createPolygon() {
+  private createPolygon(): Polygon {
     const rad = Math.hypot(this.width, this.height) / 2;
     const alpha = Math.atan2(this.width, this.height);
 
@@ -103,19 +117,19 @@ export default class Car implements Controlable {
     ];
   }
 
-  private move() {
+  private move(): void {
     this.drive();
     this.turn();
     this.updatePosition();
     this.snapToAngle();
   }
 
-  private updatePosition() {
+  private updatePosition(): void {
     this.x -= Math.sin(this.angle) * this.speed;
     this.y -= Math.cos(this.angle) * this.speed;
   }
 
-  private drive() {
+  private drive(): void {
     if (this.controls.forward) this.speed += this.acceleration;
     if (this.controls.reverse) this.speed -= this.acceleration;
 
@@ -128,7 +142,7 @@ export default class Car implements Controlable {
     }
   }
 
-  private turn() {
+  private turn(): void {
     if (this.isNotMoving()) {
       if (Math.abs(this.speed) < this.friction) this.speed = 0;
     }
@@ -147,7 +161,7 @@ export default class Car implements Controlable {
     if (this.angle < -Math.PI) this.angle += Math.PI * 2;
   }
 
-  private snapToAngle() {
+  private snapToAngle(): void {
     if (this.isNotSteering()) {
       const snap = Math.PI / 18;
       const snapAngle = Math.round(this.angle / snap) * snap;
@@ -155,15 +169,15 @@ export default class Car implements Controlable {
     }
   }
 
-  private isNotSteering() {
+  private isNotSteering(): boolean {
     return !this.controls.left && !this.controls.right;
   }
 
-  private isNotMoving() {
+  private isNotMoving(): boolean {
     return !this.controls.forward && !this.controls.reverse;
   }
 
-  public draw(ctx: CanvasRenderingContext2D) {
+  public draw(ctx: CanvasRenderingContext2D): void {
     if (this.damaged) ctx.fillStyle = 'red';
     else ctx.fillStyle = 'white';
 
@@ -228,12 +242,12 @@ export default class Car implements Controlable {
     ];
   }
 
-  public setParameter(param: string, value: number) {
+  public setParameter(param: string, value: number): void {
     // @ts-ignore
     this[param] = value;
   }
 
-  public getParameter(param: string) {
+  public getParameter(param: string): any {
     // @ts-ignore
     return this[param];
   }

@@ -1,9 +1,9 @@
 import { drawLine, linspace } from './utils/utilFunctions.js';
 import { INF, LANE_COUNT, ROAD_LEFT, ROAD_RIGHT, VISIBLE_BORDERS } from './utils/constants.js';
 import { Controlable } from './utils/ControlPanel.js';
-import { Line } from './utils/types.js';
+import { Colidable, Line, Parameter } from './utils/types.js';
 
-export default class Road implements Controlable {
+export default class Road implements Controlable, Colidable {
   private left = ROAD_LEFT;
   private right = ROAD_RIGHT;
 
@@ -27,8 +27,11 @@ export default class Road implements Controlable {
   constructor(laneCount = 3) {
     this.laneCount = laneCount;
   }
+  public getHitbox(): Line[] {
+    return this.borders;
+  }
 
-  public draw(ctx: CanvasRenderingContext2D) {
+  public draw(ctx: CanvasRenderingContext2D): void {
     ctx.strokeStyle = 'white';
     ctx.lineWidth = 5;
 
@@ -44,7 +47,7 @@ export default class Road implements Controlable {
     }
   }
 
-  private updateBorders() {
+  private updateBorders(): void {
     this.topleft = { x: this.left, y: this.top };
     this.topright = { x: this.right, y: this.top };
     this.bottomleft = { x: this.left, y: this.bottom };
@@ -56,15 +59,11 @@ export default class Road implements Controlable {
     ];
   }
 
-  public getBorders() {
-    return this.borders;
-  }
-
-  public getLaneCenter(lane: number) {
+  public getLaneCenter(lane: number): number {
     return linspace(this.left, this.right, this.laneCount)[lane];
   }
 
-  private chooseLine(ctx: CanvasRenderingContext2D, i: number) {
+  private chooseLine(ctx: CanvasRenderingContext2D, i: number): void {
     if (i === 0 || i === this.laneCount) {
       ctx.setLineDash([]);
     } else {
@@ -73,7 +72,7 @@ export default class Road implements Controlable {
   }
 
   // CONTROL PANEL
-  public getParameters() {
+  public getParameters(): Parameter[] {
     return [
       {
         name: 'left',
@@ -110,7 +109,7 @@ export default class Road implements Controlable {
     ];
   }
 
-  public setParameter(param: string, value: number) {
+  public setParameter(param: string, value: number): void {
     if (param === 'left' || param === 'right') {
       const timeout = setTimeout(() => {
         this.updateBorders();
@@ -122,7 +121,7 @@ export default class Road implements Controlable {
     this[param] = value;
   }
 
-  public getParameter(param: string): number {
+  public getParameter(param: string): any {
     // @ts-ignore
     return this[param];
   }

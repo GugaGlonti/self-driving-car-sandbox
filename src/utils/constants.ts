@@ -27,9 +27,9 @@ export const UPPER_BOUND = 0.2;
 export const LOWER_BOUND = 0.8;
 
 // SENSOR
-export const RAY_COUNT = 3;
-export const RAY_LENGTH = 100;
-export const RAY_SPREAD = Math.PI / 4;
+export const RAY_COUNT = 5;
+export const RAY_LENGTH = 200;
+export const RAY_SPREAD = Math.PI / 2;
 
 // ROAD
 export const ROAD_CENTER = window.innerWidth / 2;

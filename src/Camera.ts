@@ -1,4 +1,4 @@
-import Car from './car.js';
+import Car from './Car.js';
 import { LOWER_BOUND, UPPER_BOUND } from './utils/constants.js';
 import { Controlable } from './utils/ControlPanel.js';
 import { Parameter } from './utils/types.js';
@@ -17,7 +17,7 @@ export default class Camera implements Controlable {
     this.canvas = canvas;
   }
 
-  public update() {
+  public update(): void {
     this.resizeCanvas();
 
     this.ctx.save();
@@ -28,7 +28,7 @@ export default class Camera implements Controlable {
     this.ctx.translate(-x + window.innerWidth / 2, -y + window.innerHeight * 0.75 - yTranslation);
   }
 
-  private resizeCanvas() {
+  private resizeCanvas(): void {
     // CSS might be faster
     this.canvas.height = window.innerHeight;
     this.canvas.width = window.innerWidth;
@@ -87,6 +87,7 @@ export default class Camera implements Controlable {
     // @ts-ignore
     this[name] = value;
   }
+
   getParameter(name: string): number {
     // @ts-ignore
     return this[name];

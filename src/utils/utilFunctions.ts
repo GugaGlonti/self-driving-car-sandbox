@@ -1,4 +1,5 @@
-import { DistancePoint, Point, Polygon } from './types.js';
+import { Controlable } from './ControlPanel.js';
+import { DistancePoint, Parameter, Point, Polygon } from './types.js';
 
 /**
  * Generate a linearly spaced array of numbers
@@ -7,7 +8,7 @@ import { DistancePoint, Point, Polygon } from './types.js';
  * @param n number of points
  * @returns array of n points linearly spaced between a and b
  */
-export function linspace(a: number, b: number, n: number) {
+export function linspace(a: number, b: number, n: number): number[] {
   const step = (b - a) / n;
   const result = [];
   for (let i = 0; i <= n; i++) {
@@ -23,7 +24,7 @@ export function linspace(a: number, b: number, n: number) {
  * @param t interpolation factor
  * @returns interpolated value
  */
-export function lerp(a: number, b: number, t: number) {
+export function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t;
 }
 
@@ -35,7 +36,7 @@ export function lerp(a: number, b: number, t: number) {
  * @param color line color
  * @returns void
  */
-export function drawLine(ctx: CanvasRenderingContext2D, start: Point, end: Point, color = 'white') {
+export function drawLine(ctx: CanvasRenderingContext2D, start: Point, end: Point, color = 'white'): void {
   ctx.strokeStyle = color;
   ctx.beginPath();
   ctx.moveTo(start.x, start.y);
@@ -90,4 +91,40 @@ export function polysIntersect(P1: Polygon, P2: Polygon): boolean {
     }
   }
   return false;
+}
+
+/**
+ * Calls a function for each pair of elements in two arrays
+ * @param arr1 first array
+ * @param arr2 second array
+ * @param callback function to call
+ * @returns void
+ * @example
+ * forEachOfBoth([1, 2], [3, 4], (a, b) => console.log(a + b));
+ */
+export function forEachOfBoth(arr1: any[], arr2: any[], callback: (a: any, b: any) => any) {
+  for (let i = 0; i < arr1.length; i++) {
+    for (let j = 0; j < arr2.length; j++) {
+      callback(arr1[i], arr2[j]);
+    }
+  }
+}
+
+/**
+ * Maps a function to each pair of elements in two arrays
+ * @param arr1 first array
+ * @param arr2 second array
+ * @param callback function to call
+ * @returns array of results
+ * @example
+ * mapEachOfBoth([1, 2], [3, 4], (a, b) => a + b);
+ */
+export function mapEachOfBoth(arr1: any[], arr2: any[], callback: (a: any, b: any) => any) {
+  const result = [];
+  for (let i = 0; i < arr1.length; i++) {
+    for (let j = 0; j < arr2.length; j++) {
+      result.push(callback(arr1[i], arr2[j]));
+    }
+  }
+  return result;
 }

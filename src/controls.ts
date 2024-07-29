@@ -14,7 +14,7 @@ export default class Controls {
     }
   }
 
-  private addKeyListeners() {
+  private addKeyListeners(): void {
     document.addEventListener('keydown', event => {
       switch (event.key) {
         case UP:

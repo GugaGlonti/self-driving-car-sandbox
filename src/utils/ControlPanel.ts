@@ -35,7 +35,7 @@ export default class ControlPanel {
     });
   }
 
-  private round(value: number | string) {
+  private round(value: number | string): number {
     if (typeof value === 'string') {
       value = parseFloat(value);
     }

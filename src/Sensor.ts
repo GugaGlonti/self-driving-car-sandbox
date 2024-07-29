@@ -1,8 +1,8 @@
-import Car from './car.js';
 import { linspace, drawLine, getIntersection } from './utils/utilFunctions.js';
 import { Controlable } from './utils/ControlPanel.js';
 import { DistancePoint, Parameter, Point, Line } from './utils/types.js';
 import { RAY_COUNT, RAY_LENGTH, RAY_SPREAD } from './utils/constants.js';
+import Car from './Car.js';
 
 export default class Sensor implements Controlable {
   private car: Car;
@@ -18,12 +18,12 @@ export default class Sensor implements Controlable {
     this.car = car;
   }
 
-  public update(borders: Line[]) {
+  public update(borders: Line[]): void {
     this.castRays();
     this.updateReadings(borders);
   }
 
-  private updateReadings(borders: Line[]) {
+  private updateReadings(borders: Line[]): void {
     this.readings = this.rays.map(ray => this.getReading(ray, borders));
   }
 
@@ -45,34 +45,36 @@ export default class Sensor implements Controlable {
     return touchPoints.find(touch => touch.offset === minimumOffset);
   }
 
-  private castRays() {
+  private castRays(): void {
     this.rays = [];
     const carAngle = this.car.getAngle();
     const start: Point = this.car.getPosition();
 
     if (this.rayCount === 1) {
-      return this.rays.push([
+      this.rays.push([
         start,
         {
           x: start.x - Math.sin(carAngle) * this.rayLength,
           y: start.y - Math.cos(carAngle) * this.rayLength,
         },
       ]);
+      return;
     }
 
     linspace(-this.raySpread / 2, this.raySpread / 2, this.rayCount - 1).forEach(rayAngle => {
       rayAngle += carAngle;
-      return this.rays.push([
+      this.rays.push([
         start,
         {
           x: start.x - Math.sin(rayAngle) * this.rayLength,
           y: start.y - Math.cos(rayAngle) * this.rayLength,
         },
       ]);
+      return;
     });
   }
 
-  public draw(ctx: CanvasRenderingContext2D) {
+  public draw(ctx: CanvasRenderingContext2D): void {
     ctx.lineWidth = 1;
 
     this.rays.forEach(([start, end], i) => {
@@ -116,12 +118,12 @@ export default class Sensor implements Controlable {
     ];
   }
 
-  public setParameter(param: string, value: number) {
+  public setParameter(param: string, value: number): void {
     // @ts-ignore
     this[param] = value;
   }
 
-  public getParameter(param: string) {
+  public getParameter(param: string): any {
     // @ts-ignore
     return this[param];
   }
