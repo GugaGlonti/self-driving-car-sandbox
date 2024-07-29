@@ -1,9 +1,10 @@
 import Controls from './Controls.js';
+import NeuralNetwork from './NeuralNetwork.js';
 import Sensor from './Sensor.js';
 import { ACCELERATION, CPU_TOP_SPEED, DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_X, DEFAULT_Y, FRICTION, REVERSE_SPEED, STEERING_FORCE, TOP_SPEED } from './utils/constants.js';
 
 import { Controlable } from './utils/ControlPanel.js';
-import { Colidable, Line, Parameter, Point, Polygon } from './utils/types.js';
+import { Colidable, ControlType, Line, Parameter, Point, Polygon } from './utils/types.js';
 import { polysIntersect } from './utils/utilFunctions.js';
 
 export default class Car implements Controlable, Colidable {
@@ -20,11 +21,12 @@ export default class Car implements Controlable, Colidable {
   private acceleration = ACCELERATION;
   private friction = FRICTION;
 
-  private controls: Controls;
-  private sensor: Sensor | undefined = new Sensor(this);
-
   private polygon: Polygon = this.createPolygon();
   private damaged = false;
+
+  private controls: Controls;
+  private sensor: Sensor | undefined;
+  private neuralNetwork: NeuralNetwork | undefined;
 
   // prettier-ignore
   constructor(
@@ -32,36 +34,31 @@ export default class Car implements Controlable, Colidable {
     y: number = DEFAULT_Y,
     width: number = DEFAULT_WIDTH,
     height: number = DEFAULT_HEIGHT,
-    isPlayer: boolean = false
+    controlType: ControlType = "CPU"
   ) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
-    this.controls = new Controls(isPlayer);
+    this.controls = new Controls(controlType);
 
-    if (!isPlayer) {
-      this.sensor = undefined;
-      this.topSpeed = CPU_TOP_SPEED;
-      this.y = -100;
+    switch (controlType) {
+      case 'AI':
+        this.sensor = new Sensor(this);
+        this.neuralNetwork = new NeuralNetwork([
+          this.sensor.getRayCount(),
+          6,
+          4
+        ])
+      case 'Player':
+        this.sensor = new Sensor(this);
+        break;
+      case 'CPU':
+        this.sensor = undefined;
+        this.topSpeed = CPU_TOP_SPEED;
+        this.y = -100;
+        break;
     }
-  }
-  public getPosition(): Point {
-    return { x: this.x, y: this.y };
-  }
-
-  public getAngle(): number {
-    return this.angle;
-  }
-
-  public getHitbox(): Line[] {
-    return this.polygonToLines(this.polygon);
-  }
-
-  private polygonToLines(polygon: Polygon): Line[] {
-    return polygon.map((point, i) => {
-      return [point, polygon[(i + 1) % polygon.length]];
-    }) as Line[];
   }
 
   public update(...hitbox: Line[]): void {
@@ -74,6 +71,7 @@ export default class Car implements Controlable, Colidable {
 
     if (this.sensor) {
       this.sensor.update(hitbox);
+      console.log(this.neuralNetwork?.feedForward(this.sensor.getReadings()));
     }
   }
 
@@ -115,6 +113,12 @@ export default class Car implements Controlable, Colidable {
         y: y - Math.cos(angle + Math.PI + alpha) * rad,
       },
     ];
+  }
+
+  private polygonToLines(polygon: Polygon): Line[] {
+    return polygon.map((point, i) => {
+      return [point, polygon[(i + 1) % polygon.length]];
+    }) as Line[];
   }
 
   private move(): void {
@@ -175,6 +179,18 @@ export default class Car implements Controlable, Colidable {
 
   private isNotMoving(): boolean {
     return !this.controls.forward && !this.controls.reverse;
+  }
+
+  public getPosition(): Point {
+    return { x: this.x, y: this.y };
+  }
+
+  public getAngle(): number {
+    return this.angle;
+  }
+
+  public getHitbox(): Line[] {
+    return this.polygonToLines(this.polygon);
   }
 
   public draw(ctx: CanvasRenderingContext2D): void {

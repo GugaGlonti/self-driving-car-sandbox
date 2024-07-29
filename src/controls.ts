@@ -1,4 +1,5 @@
 import { DOWN, LEFT, RIGHT, UP } from './utils/constants.js';
+import { ControlType } from './utils/types.js';
 
 export default class Controls {
   public forward = false;
@@ -6,11 +7,16 @@ export default class Controls {
   public left = false;
   public right = false;
 
-  constructor(isPlayer: boolean) {
-    if (isPlayer) {
-      this.addKeyListeners();
-    } else {
-      this.forward = true;
+  constructor(controlType: ControlType) {
+    switch (controlType) {
+      case 'Player':
+        this.addKeyListeners();
+        break;
+      case 'CPU':
+        this.forward = true;
+        break;
+      case 'AI':
+        break;
     }
   }
 

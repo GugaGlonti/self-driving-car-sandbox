@@ -18,6 +18,14 @@ export default class Sensor implements Controlable {
     this.car = car;
   }
 
+  public getReadings(): number[] {
+    return this.readings.map(reading => (reading ? 1 - reading.offset : 0));
+  }
+
+  public getRayCount(): number {
+    return this.rayCount;
+  }
+
   public update(borders: Line[]): void {
     this.castRays();
     this.updateReadings(borders);

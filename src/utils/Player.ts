@@ -1,7 +1,7 @@
-import Car from '../car.js';
+import Car from '../Car.js';
 
 export default class Player extends Car {
   constructor() {
-    super(undefined, undefined, undefined, undefined, true);
+    super(undefined, undefined, undefined, undefined, 'Player');
   }
 }
