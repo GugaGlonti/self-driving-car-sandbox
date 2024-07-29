@@ -6,7 +6,6 @@ import Player from './utils/Player.js';
 import ControlPanel from './utils/ControlPanel.js';
 import Car from './Car.js';
 import Traffic from './Traffic.js';
-import { forEachOfBoth, mapEachOfBoth } from './utils/utilFunctions.js';
 
 const canvas = document.getElementById('canvas')! as HTMLCanvasElement;
 const ctx = canvas.getContext('2d')!;
