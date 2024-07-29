@@ -93,6 +93,8 @@ export function polysIntersect(P1: Polygon, P2: Polygon): boolean {
   return false;
 }
 
+export type OfBothCallback = (a: any, b: any, ai?: number, bi?: number, retArr1?: any[], retArr2?: any[]) => any;
+
 /**
  * Calls a function for each pair of elements in two arrays
  * @param arr1 first array
@@ -102,10 +104,10 @@ export function polysIntersect(P1: Polygon, P2: Polygon): boolean {
  * @example
  * forEachOfBoth([1, 2], [3, 4], (a, b) => console.log(a + b));
  */
-export function forEachOfBoth(arr1: any[], arr2: any[], callback: (a: any, b: any) => any) {
+export function forEachOfBoth(arr1: any[], arr2: any[], callback: OfBothCallback) {
   for (let i = 0; i < arr1.length; i++) {
     for (let j = 0; j < arr2.length; j++) {
-      callback(arr1[i], arr2[j]);
+      callback(arr1[i], arr2[j], i, j, arr1, arr2);
     }
   }
 }
@@ -119,12 +121,44 @@ export function forEachOfBoth(arr1: any[], arr2: any[], callback: (a: any, b: an
  * @example
  * mapEachOfBoth([1, 2], [3, 4], (a, b) => a + b);
  */
-export function mapEachOfBoth(arr1: any[], arr2: any[], callback: (a: any, b: any) => any) {
+export function mapEachOfBoth(arr1: any[], arr2: any[], callback: OfBothCallback) {
   const result = [];
   for (let i = 0; i < arr1.length; i++) {
     for (let j = 0; j < arr2.length; j++) {
-      result.push(callback(arr1[i], arr2[j]));
+      result.push(callback(arr1[i], arr2[j], i, j, arr1, arr2));
     }
   }
   return result;
+}
+
+export type OfManyCallback = (args: any[], indices: number[], retArrs: any[][]) => any;
+
+/**
+ * Calls a function for each combination of elements in multiple arrays
+ * @param arrays arrays to combine
+ * @param callback function to call
+ * @returns void
+ * @example
+ * forEachOfMany([[1, 2], [3, 4], [5, 6]], (a, b, c) => console.log(a, b, c));
+ */
+export function forEachOfMany(arrays: any[][], callback: OfManyCallback) {
+  const indices = new Array(arrays.length).fill(0);
+  const retArrs = arrays.map(() => []);
+  const n = arrays.reduce((a, b) => a * b.length, 1);
+
+  for (let i = 0; i < n; i++) {
+    callback(
+      arrays.map((arr, j) => arr[indices[j]]),
+      indices,
+      retArrs
+    );
+
+    for (let j = 0; j < arrays.length; j++) {
+      indices[j]++;
+      if (indices[j] < arrays[j].length) {
+        break;
+      }
+      indices[j] = 0;
+    }
+  }
 }
