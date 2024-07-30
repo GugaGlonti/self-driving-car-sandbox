@@ -64,7 +64,7 @@ export default class Road implements Controlable, Colidable {
   }
 
   public getLaneCenter(lane: number): number {
-    return linspace(this.left, this.right, this.laneCount)[lane];
+    return linspace(this.left, this.right, this.laneCount)[lane % this.laneCount] + (this.right - this.left) / (2 * this.laneCount);
   }
 
   private chooseLine(ctx: CanvasRenderingContext2D, i: number): void {

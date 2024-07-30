@@ -28,14 +28,7 @@ export default class Car implements Controlable, Colidable {
   private sensor: Sensor | undefined;
   private neuralNetwork: NeuralNetwork | undefined;
 
-  // prettier-ignore
-  constructor(
-    x: number = DEFAULT_X,
-    y: number = DEFAULT_Y,
-    width: number = DEFAULT_WIDTH,
-    height: number = DEFAULT_HEIGHT,
-    controlType: ControlType = "CPU"
-  ) {
+  constructor(x: number = DEFAULT_X, y: number = DEFAULT_Y, width: number = DEFAULT_WIDTH, height: number = DEFAULT_HEIGHT, controlType: ControlType = 'CPU', neuralNetwork?: NeuralNetwork) {
     this.x = x;
     this.y = y;
     this.width = width;
@@ -45,18 +38,23 @@ export default class Car implements Controlable, Colidable {
     switch (controlType) {
       case 'AI':
         this.sensor = new Sensor(this);
-        this.neuralNetwork = new NeuralNetwork([
-          this.sensor.getRayCount(),
-          ...HIDDEN_LAYERS,
-          4, // 4 outputs for forward, reverse, left, right
-        ])
+        if (neuralNetwork) {
+          this.neuralNetwork = neuralNetwork;
+        } else {
+          this.neuralNetwork = new NeuralNetwork([
+            this.sensor.getRayCount(),
+            ...HIDDEN_LAYERS,
+            4, // 4 outputs for forward, reverse, left, right
+          ]);
+        }
+        break;
       case 'Player':
         this.sensor = new Sensor(this);
         break;
       case 'CPU':
         this.sensor = undefined;
         this.topSpeed = CPU_TOP_SPEED;
-        this.y = -100;
+        this.y = -300;
         break;
     }
   }
@@ -82,6 +80,10 @@ export default class Car implements Controlable, Colidable {
 
   public getNeuralNetwork(): NeuralNetwork {
     return this.neuralNetwork!;
+  }
+
+  public setNeuralNetwork(nn: NeuralNetwork): void {
+    this.neuralNetwork = nn;
   }
 
   private assessDamage(hitbox: Line[]): boolean {

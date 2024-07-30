@@ -15,6 +15,20 @@ body {
   justify-content: center;
 }
 
+#info {
+  background-color: #313131;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  align-items: center;
+
+  button {
+    font-size: xx-large;
+  }
+}
+
 #canvas {
   background-color: #b5b5b5;
 }

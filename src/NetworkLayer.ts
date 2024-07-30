@@ -1,3 +1,5 @@
+import { lerp } from './utils/utilFunctions.js';
+
 export default class NetworkLayer {
   private inputs: number[];
   private outputs: number[];
@@ -19,6 +21,15 @@ export default class NetworkLayer {
       biases: this.biases,
       weights: this.weights,
     };
+  }
+
+  public copy() {
+    const layer = new NetworkLayer(this.inputs.length, this.outputs.length);
+    layer.inputs = this.inputs;
+    layer.outputs = this.outputs;
+    layer.biases = this.biases;
+    layer.weights = this.weights;
+    return layer;
   }
 
   public feedForward(inputs: number[]) {
@@ -46,5 +57,26 @@ export default class NetworkLayer {
         this.weights[i][j] = this.randomWeight();
       }
     }
+  }
+
+  public mutate(mutationRate: number) {
+    this.biases = this.biases.map(bias => {
+      return lerp(bias, this.randomWeight(), mutationRate);
+    });
+
+    this.weights = this.weights.map(weight => {
+      return weight.map(w => {
+        return lerp(w, this.randomWeight(), mutationRate);
+      });
+    });
+  }
+
+  public static fromJSON(json: any) {
+    const layer = new NetworkLayer(0, 0);
+    layer.inputs = json.inputs;
+    layer.outputs = json.outputs;
+    layer.biases = json.biases;
+    layer.weights = json.weights;
+    return layer;
   }
 }

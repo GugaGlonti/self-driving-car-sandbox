@@ -1,4 +1,5 @@
 import Car from './Car.js';
+import NeuralNetwork from './NeuralNetwork.js';
 import { Colidable, Line } from './utils/types.js';
 
 export default class Traffic implements Colidable {
@@ -24,5 +25,17 @@ export default class Traffic implements Colidable {
     return Array.from({ length: count }, () => {
       return new Car(undefined, undefined, undefined, undefined, 'AI');
     });
+  }
+
+  static generateMutatedAICars(count: number, nn: NeuralNetwork, mutationRate: number): Car[] {
+    const carsWithSameNN = Array.from({ length: count }, () => {
+      return new Car(undefined, undefined, undefined, undefined, 'AI', nn);
+    });
+
+    carsWithSameNN.forEach(car => {
+      NeuralNetwork.mutate(car.getNeuralNetwork().copy(), mutationRate);
+    });
+
+    return carsWithSameNN;
   }
 }

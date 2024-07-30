@@ -19,7 +19,34 @@ export default class NeuralNetwork {
     return outputs;
   }
 
+  public copy(): NeuralNetwork {
+    const nn = new NeuralNetwork([]);
+    nn.layers = this.layers.map(layer => layer.copy());
+    return nn;
+  }
+
   public getLayers() {
     return this.layers;
+  }
+
+  public static mutate(nn: NeuralNetwork, mutationRate: number): void {
+    nn.layers.forEach(layer => {
+      layer.mutate(mutationRate);
+    });
+  }
+
+  public setLayers(layers: NetworkLayer[]) {
+    this.layers = layers;
+  }
+
+  public static fromJSON(json: string): NeuralNetwork {
+    const obj = JSON.parse(json);
+    const nn = new NeuralNetwork(obj.layers.length);
+    nn.setLayers(
+      obj.layers.map((layer: any) => {
+        return NetworkLayer.fromJSON(layer);
+      })
+    );
+    return nn;
   }
 }
