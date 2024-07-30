@@ -1,5 +1,4 @@
 import Car from './Car.js';
-import NeuralNetwork from './NeuralNetwork.js';
 
 export default class IO {
   public static save(car: Car): void {

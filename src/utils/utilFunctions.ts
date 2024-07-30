@@ -1,4 +1,3 @@
-import { Controlable } from './ControlPanel.js';
 import { DistancePoint, Parameter, Point, Polygon } from './types.js';
 
 /**
@@ -36,7 +35,12 @@ export function lerp(a: number, b: number, t: number): number {
  * @param color line color
  * @returns void
  */
-export function drawLine(ctx: CanvasRenderingContext2D, start: Point, end: Point, color = 'white'): void {
+export function drawLine(
+  ctx: CanvasRenderingContext2D,
+  start: Point,
+  end: Point,
+  color = 'white',
+): void {
   ctx.strokeStyle = color;
   ctx.beginPath();
   ctx.moveTo(start.x, start.y);
@@ -52,7 +56,12 @@ export function drawLine(ctx: CanvasRenderingContext2D, start: Point, end: Point
  * @param D end of line 2
  * @returns intersection point
  */
-export function getIntersection(A: Point, B: Point, C: Point, D: Point): DistancePoint | undefined {
+export function getIntersection(
+  A: Point,
+  B: Point,
+  C: Point,
+  D: Point,
+): DistancePoint | undefined {
   const tTop = (D.x - C.x) * (A.y - C.y) - (D.y - C.y) * (A.x - C.x);
   const uTop = (C.y - A.y) * (A.x - B.x) - (C.x - A.x) * (A.y - B.y);
   const bottom = (D.y - C.y) * (B.x - A.x) - (D.x - C.x) * (B.y - A.y);
@@ -93,7 +102,14 @@ export function polysIntersect(P1: Polygon, P2: Polygon): boolean {
   return false;
 }
 
-export type OfBothCallback = (a: any, b: any, ai?: number, bi?: number, retArr1?: any[], retArr2?: any[]) => any;
+export type OfBothCallback = (
+  a: any,
+  b: any,
+  ai?: number,
+  bi?: number,
+  retArr1?: any[],
+  retArr2?: any[],
+) => any;
 
 /**
  * Calls a function for each pair of elements in two arrays
@@ -104,7 +120,11 @@ export type OfBothCallback = (a: any, b: any, ai?: number, bi?: number, retArr1?
  * @example
  * forEachOfBoth([1, 2], [3, 4], (a, b) => console.log(a + b));
  */
-export function forEachOfBoth(arr1: any[], arr2: any[], callback: OfBothCallback) {
+export function forEachOfBoth(
+  arr1: any[],
+  arr2: any[],
+  callback: OfBothCallback,
+) {
   for (let i = 0; i < arr1.length; i++) {
     for (let j = 0; j < arr2.length; j++) {
       callback(arr1[i], arr2[j], i, j, arr1, arr2);
@@ -121,7 +141,11 @@ export function forEachOfBoth(arr1: any[], arr2: any[], callback: OfBothCallback
  * @example
  * mapEachOfBoth([1, 2], [3, 4], (a, b) => a + b);
  */
-export function mapEachOfBoth(arr1: any[], arr2: any[], callback: OfBothCallback) {
+export function mapEachOfBoth(
+  arr1: any[],
+  arr2: any[],
+  callback: OfBothCallback,
+) {
   const result = [];
   for (let i = 0; i < arr1.length; i++) {
     for (let j = 0; j < arr2.length; j++) {
@@ -131,7 +155,11 @@ export function mapEachOfBoth(arr1: any[], arr2: any[], callback: OfBothCallback
   return result;
 }
 
-export type OfManyCallback = (args: any[], indices: number[], retArrs: any[][]) => any;
+export type OfManyCallback = (
+  args: any[],
+  indices: number[],
+  retArrs: any[][],
+) => any;
 
 /**
  * Calls a function for each combination of elements in multiple arrays
@@ -150,7 +178,7 @@ export function forEachOfMany(arrays: any[][], callback: OfManyCallback) {
     callback(
       arrays.map((arr, j) => arr[indices[j]]),
       indices,
-      retArrs
+      retArrs,
     );
 
     for (let j = 0; j < arrays.length; j++) {

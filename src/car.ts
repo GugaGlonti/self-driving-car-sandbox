@@ -1,10 +1,29 @@
 import Controls from './Controls.js';
 import NeuralNetwork from './NeuralNetwork.js';
 import Sensor from './Sensor.js';
-import { ACCELERATION, CPU_TOP_SPEED, DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_X, DEFAULT_Y, FRICTION, HIDDEN_LAYERS, REVERSE_SPEED, STEERING_FORCE, TOP_SPEED } from './utils/constants.js';
+import {
+  ACCELERATION,
+  CPU_TOP_SPEED,
+  DEFAULT_HEIGHT,
+  DEFAULT_WIDTH,
+  DEFAULT_X,
+  DEFAULT_Y,
+  FRICTION,
+  HIDDEN_LAYERS,
+  REVERSE_SPEED,
+  STEERING_FORCE,
+  TOP_SPEED,
+} from './utils/constants.js';
 
 import { Controlable } from './utils/ControlPanel.js';
-import { Colidable, ControlType, Line, Parameter, Point, Polygon } from './utils/types.js';
+import {
+  Colidable,
+  ControlType,
+  Line,
+  Parameter,
+  Point,
+  Polygon,
+} from './utils/types.js';
 import { polysIntersect } from './utils/utilFunctions.js';
 
 export default class Car implements Controlable, Colidable {
@@ -28,7 +47,14 @@ export default class Car implements Controlable, Colidable {
   private sensor: Sensor | undefined;
   private neuralNetwork: NeuralNetwork | undefined;
 
-  constructor(x: number = DEFAULT_X, y: number = DEFAULT_Y, width: number = DEFAULT_WIDTH, height: number = DEFAULT_HEIGHT, controlType: ControlType = 'CPU', neuralNetwork?: NeuralNetwork) {
+  constructor(
+    x: number = DEFAULT_X,
+    y: number = DEFAULT_Y,
+    width: number = DEFAULT_WIDTH,
+    height: number = DEFAULT_HEIGHT,
+    controlType: ControlType = 'CPU',
+    neuralNetwork?: NeuralNetwork,
+  ) {
     this.x = x;
     this.y = y;
     this.width = width;
@@ -217,7 +243,7 @@ export default class Car implements Controlable, Colidable {
       ctx.beginPath();
       const { x, y } = this.polygon.pop()!;
       ctx.moveTo(x, y);
-      this.polygon.forEach(point => ctx.lineTo(point.x, point.y));
+      this.polygon.forEach((point) => ctx.lineTo(point.x, point.y));
       ctx.fill();
     } catch (error) {
       console.error('Error drawing car', error);

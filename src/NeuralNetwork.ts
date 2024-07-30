@@ -21,7 +21,7 @@ export default class NeuralNetwork {
 
   public copy(): NeuralNetwork {
     const nn = new NeuralNetwork([]);
-    nn.layers = this.layers.map(layer => layer.copy());
+    nn.layers = this.layers.map((layer) => layer.copy());
     return nn;
   }
 
@@ -30,7 +30,7 @@ export default class NeuralNetwork {
   }
 
   public static mutate(nn: NeuralNetwork, mutationRate: number): void {
-    nn.layers.forEach(layer => {
+    nn.layers.forEach((layer) => {
       layer.mutate(mutationRate);
     });
   }
@@ -45,7 +45,7 @@ export default class NeuralNetwork {
     nn.setLayers(
       obj.layers.map((layer: any) => {
         return NetworkLayer.fromJSON(layer);
-      })
+      }),
     );
     return nn;
   }

@@ -1,7 +1,14 @@
 export type ControlType = 'Player' | 'CPU' | 'AI';
 
-export type Point = { x: number; y: number };
-export type DistancePoint = { x: number; y: number; offset: number };
+export type Point = {
+  x: number;
+  y: number;
+};
+export type DistancePoint = {
+  x: number;
+  y: number;
+  offset: number;
+};
 
 export type Line = [Point, Point];
 export type Polygon = Point[];

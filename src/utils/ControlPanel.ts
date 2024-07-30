@@ -15,7 +15,7 @@ export default class ControlPanel {
   constructor(...controlables: Controlable[]) {
     this.controlables = controlables;
 
-    this.controlables.forEach(controlable => {
+    this.controlables.forEach((controlable) => {
       this.parameters.push(...controlable.getParameters());
     });
 
@@ -30,7 +30,9 @@ export default class ControlPanel {
 
       input.addEventListener('input', () => {
         obj.setParameter(name, parseFloat(input.value));
-        input.nextElementSibling!.textContent = `${name}: ${this.round(input.value)}`;
+        input.nextElementSibling!.textContent = `${name}: ${this.round(
+          input.value,
+        )}`;
       });
     });
   }
@@ -48,7 +50,7 @@ export default class ControlPanel {
       this.drawClosedPanel();
     } else {
       this.drawOpenPanel();
-      this.controlables.forEach(controlable => {
+      this.controlables.forEach((controlable) => {
         this.addEventListeners(controlable);
       });
     }

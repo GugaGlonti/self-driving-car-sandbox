@@ -1,5 +1,12 @@
 import { drawLine, linspace } from './utils/utilFunctions.js';
-import { INF, LANE_COUNT, ROAD_LEFT, ROAD_RIGHT, SHOULDER_WIDTH, VISIBLE_BORDERS } from './utils/constants.js';
+import {
+  INF,
+  LANE_COUNT,
+  ROAD_LEFT,
+  ROAD_RIGHT,
+  SHOULDER_WIDTH,
+  VISIBLE_BORDERS,
+} from './utils/constants.js';
 import { Controlable } from './utils/ControlPanel.js';
 import { Colidable, Line, Parameter } from './utils/types.js';
 
@@ -34,7 +41,12 @@ export default class Road implements Controlable, Colidable {
 
   public draw(ctx: CanvasRenderingContext2D): void {
     ctx.fillStyle = 'gray';
-    ctx.fillRect(this.left - this.shoulderWidth, this.top, this.right - this.left + this.shoulderWidth * 2, this.bottom - this.top);
+    ctx.fillRect(
+      this.left - this.shoulderWidth,
+      this.top,
+      this.right - this.left + this.shoulderWidth * 2,
+      this.bottom - this.top,
+    );
 
     ctx.strokeStyle = 'white';
     ctx.lineWidth = 5;
@@ -64,7 +76,14 @@ export default class Road implements Controlable, Colidable {
   }
 
   public getLaneCenter(lane: number): number {
-    return linspace(this.left, this.right, this.laneCount)[lane % this.laneCount] + (this.right - this.left) / (2 * this.laneCount);
+    return (
+      linspace(this.left, this.right, this.laneCount)[lane % this.laneCount] +
+      (this.right - this.left) / (2 * this.laneCount)
+    );
+  }
+
+  public getLaneCount(): number {
+    return this.laneCount;
   }
 
   private chooseLine(ctx: CanvasRenderingContext2D, i: number): void {

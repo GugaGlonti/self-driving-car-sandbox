@@ -19,7 +19,7 @@ export default class Sensor implements Controlable {
   }
 
   public getReadings(): number[] {
-    return this.readings.map(reading => (reading ? 1 - reading.offset : 0));
+    return this.readings.map((reading) => (reading ? 1 - reading.offset : 0));
   }
 
   public getRayCount(): number {
@@ -32,12 +32,12 @@ export default class Sensor implements Controlable {
   }
 
   private updateReadings(borders: Line[]): void {
-    this.readings = this.rays.map(ray => this.getReading(ray, borders));
+    this.readings = this.rays.map((ray) => this.getReading(ray, borders));
   }
 
   private getReading(ray: Line, borders: Line[]): DistancePoint | undefined {
     const touchPoints: DistancePoint[] = [];
-    borders.forEach(border => {
+    borders.forEach((border) => {
       const touch = getIntersection(ray[0], ray[1], border[0], border[1]);
       if (touch) {
         touchPoints.push(touch);
@@ -48,9 +48,9 @@ export default class Sensor implements Controlable {
       return undefined;
     }
 
-    const offsets = touchPoints.map(touch => touch.offset);
+    const offsets = touchPoints.map((touch) => touch.offset);
     const minimumOffset = Math.min(...offsets);
-    return touchPoints.find(touch => touch.offset === minimumOffset);
+    return touchPoints.find((touch) => touch.offset === minimumOffset);
   }
 
   private castRays(): void {
@@ -69,7 +69,11 @@ export default class Sensor implements Controlable {
       return;
     }
 
-    linspace(-this.raySpread / 2, this.raySpread / 2, this.rayCount - 1).forEach(rayAngle => {
+    linspace(
+      -this.raySpread / 2,
+      this.raySpread / 2,
+      this.rayCount - 1,
+    ).forEach((rayAngle) => {
       rayAngle += carAngle;
       this.rays.push([
         start,

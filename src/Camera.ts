@@ -15,7 +15,13 @@ export default class Camera implements Controlable {
   private upperBound = UPPER_BOUND;
   private lowerBound = LOWER_BOUND;
 
-  constructor(car: Car, ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, nnCtx: CanvasRenderingContext2D, nnCanvas: HTMLCanvasElement) {
+  constructor(
+    car: Car,
+    ctx: CanvasRenderingContext2D,
+    canvas: HTMLCanvasElement,
+    nnCtx: CanvasRenderingContext2D,
+    nnCanvas: HTMLCanvasElement,
+  ) {
     this.carCanvas = canvas;
     this.carCtx = ctx;
     this.nnCanvas = nnCanvas;
@@ -33,7 +39,8 @@ export default class Camera implements Controlable {
 
     this.carCtx.save();
     const factor = Math.abs(this.car.getAngle()) / Math.PI;
-    const yTranslation = (window.innerHeight / 2) * this.easeInOut(this.convertRange(factor));
+    const yTranslation =
+      (window.innerHeight / 2) * this.easeInOut(this.convertRange(factor));
 
     let { x, y } = this.car.getPosition();
     const { width, height } = this.carCanvas;
@@ -69,7 +76,7 @@ export default class Camera implements Controlable {
 
   /**
    * Converts a value from the range [lowerBound, upperBound] to the range [0, 1]
-   * @param {number} x - A number in the range [lowerBound, upperBound]x < lowerBound or x > upperBound will return 0 or 1 respectively
+   * @param {number} x - A number in the range [lowerBound, upperBound]
    * @returns {number} The corresponding number in the range [0, 1]
    */
   private convertRange(x: number): number {

@@ -22,13 +22,6 @@ saveButton.onclick = () => IO.save(bestCar);
 discardButton.onclick = () => IO.discard();
 
 const road = new Road();
-// prettier-ignore
-const traffic = new Traffic([
-  new Car(road.getLaneCenter(0)),
-  new Car(road.getLaneCenter(4)),
-  new Car(road.getLaneCenter(1)),
-  new Car(road.getLaneCenter(2))
-]);
 
 const N = N_CARS;
 let cars: Car[] = Traffic.generateAICars(N);
@@ -43,6 +36,9 @@ if (localStorage.getItem('nn')) {
   });
 }
 let bestCar = cars[0];
+
+// ============== Traffic ===============
+const traffic = new Traffic(bestCar, road, 1);
 
 const camera = new Camera(bestCar, carCtx, carCanvas, nnCtx, nnCanvas);
 
@@ -65,10 +61,11 @@ function animate(time: number): void {
 
   // ============== Traffic ===============
   traffic.update(...road.getHitbox());
+  traffic.setReferenceCar(bestCar);
 
   // ============== AI Cars ===============
   // AI CARS
-  cars.forEach(cars => {
+  cars.forEach((cars) => {
     cars.update(...road.getHitbox(), ...traffic.getHitbox());
   });
 
@@ -76,13 +73,13 @@ function animate(time: number): void {
   carCtx.save();
 
   // ========= Update the camera ==========
-  bestCar = cars.find(car => {
+  bestCar = cars.find((car) => {
     return (
       car.getPosition().y ===
       Math.min(
-        ...cars.map(car => {
+        ...cars.map((car) => {
           return car.getPosition().y;
-        })
+        }),
       )
     );
   })!;
@@ -92,14 +89,14 @@ function animate(time: number): void {
   // ================ Draw ================
   road.draw(carCtx);
   traffic.draw(carCtx);
-  transparent(() => cars.forEach(car => car.draw(carCtx)));
+  transparent(() => cars.forEach((car) => car.draw(carCtx)));
   bestCar.draw(carCtx, 'blue');
 
   // ============ Restore Ctx =============
   carCtx.restore();
 
   // ======= Request the next frame =======
-  requestAnimationFrame(t => animate(t % 1000));
+  requestAnimationFrame((t) => animate(t % 1000));
 }
 
 requestAnimationFrame(animate);

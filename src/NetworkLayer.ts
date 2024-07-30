@@ -60,12 +60,12 @@ export default class NetworkLayer {
   }
 
   public mutate(mutationRate: number) {
-    this.biases = this.biases.map(bias => {
+    this.biases = this.biases.map((bias) => {
       return lerp(bias, this.randomWeight(), mutationRate);
     });
 
-    this.weights = this.weights.map(weight => {
-      return weight.map(w => {
+    this.weights = this.weights.map((weight) => {
+      return weight.map((w) => {
         return lerp(w, this.randomWeight(), mutationRate);
       });
     });

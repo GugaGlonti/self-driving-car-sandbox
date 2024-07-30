@@ -15,14 +15,36 @@ export default class Visualizer {
     const layerHeight = height / layers.length;
 
     for (let i = layers.length - 1; i >= 0; i--) {
-      const layerTop = top + lerp(height - layerHeight, 0, layers.length == 1 ? 0.5 : i / (layers.length - 1));
+      const layerTop =
+        top +
+        lerp(
+          height - layerHeight,
+          0,
+          layers.length == 1 ? 0.5 : i / (layers.length - 1),
+        );
 
       ctx.setLineDash([7, 3]);
-      Visualizer.drawlayer(ctx, layers[i], left, layerTop, width, layerHeight, i == layers.length - 1 ? ['⇧', '⇦', '⇨', '⇩'] : []);
+      Visualizer.drawlayer(
+        ctx,
+        layers[i],
+        left,
+        layerTop,
+        width,
+        layerHeight,
+        i == layers.length - 1 ? ['⇧', '⇦', '⇨', '⇩'] : [],
+      );
     }
   }
 
-  static drawlayer(ctx: CanvasRenderingContext2D, layer: NetworkLayer, left: number, top: number, width: number, height: number, outputLabels: string[]) {
+  static drawlayer(
+    ctx: CanvasRenderingContext2D,
+    layer: NetworkLayer,
+    left: number,
+    top: number,
+    width: number,
+    height: number,
+    outputLabels: string[],
+  ) {
     const right = left + width;
     const bottom = top + height;
 
@@ -88,7 +110,16 @@ export default class Visualizer {
     }
   }
 
-  static #getNodeX(nodes: number[], index: number, left: number, right: number) {
-    return lerp(left, right, nodes.length == 1 ? 0.5 : index / (nodes.length - 1));
+  static #getNodeX(
+    nodes: number[],
+    index: number,
+    left: number,
+    right: number,
+  ) {
+    return lerp(
+      left,
+      right,
+      nodes.length == 1 ? 0.5 : index / (nodes.length - 1),
+    );
   }
 }

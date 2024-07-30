@@ -21,11 +21,13 @@ export default class Controls {
   }
 
   public setControls(controls: number[]) {
-    [this.forward, this.left, this.right, this.reverse] = controls.map(c => (!!c ? true : false));
+    [this.forward, this.left, this.right, this.reverse] = controls.map((c) =>
+      !!c ? true : false,
+    );
   }
 
   private addKeyListeners(): void {
-    document.addEventListener('keydown', event => {
+    document.addEventListener('keydown', (event) => {
       switch (event.key) {
         case UP:
           this.forward = true;
@@ -42,7 +44,7 @@ export default class Controls {
       }
     });
 
-    document.addEventListener('keyup', event => {
+    document.addEventListener('keyup', (event) => {
       switch (event.key) {
         case UP:
           this.forward = false;
