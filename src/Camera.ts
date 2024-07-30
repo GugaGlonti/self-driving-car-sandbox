@@ -24,24 +24,33 @@ export default class Camera implements Controlable {
     this.car = car;
   }
 
-  public update(): void {
+  public setCar(car: Car): void {
+    this.car = car;
+  }
+
+  public update(maxHeight?: number): void {
     this.resizeCanvas();
 
     this.carCtx.save();
     const factor = Math.abs(this.car.getAngle()) / Math.PI;
     const yTranslation = (window.innerHeight / 2) * this.easeInOut(this.convertRange(factor));
 
-    const { x, y } = this.car.getPosition();
+    let { x, y } = this.car.getPosition();
     const { width, height } = this.carCanvas;
 
-    this.carCtx.translate(width / 2 - x, height * (3 / 4) - y - yTranslation);
+    if (maxHeight !== undefined) {
+      y = maxHeight;
+    }
+
+    // prettier-ignore
+    this.carCtx.translate(
+      width / 2 - x,
+      height * (3 / 4) - y - yTranslation);
 
     Visualizer.drawNetwork(this.nnCtx, this.car.getNeuralNetwork());
   }
 
   private resizeCanvas(): void {
-    console.log(this.carCanvas.width, this.carCanvas.height, this.nnCanvas.width, this.nnCanvas.height);
-
     this.carCanvas.width = window.innerWidth / 2;
     this.carCanvas.height = window.innerHeight;
 

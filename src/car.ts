@@ -1,7 +1,7 @@
 import Controls from './Controls.js';
 import NeuralNetwork from './NeuralNetwork.js';
 import Sensor from './Sensor.js';
-import { ACCELERATION, CPU_TOP_SPEED, DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_X, DEFAULT_Y, FRICTION, REVERSE_SPEED, STEERING_FORCE, TOP_SPEED } from './utils/constants.js';
+import { ACCELERATION, CPU_TOP_SPEED, DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_X, DEFAULT_Y, FRICTION, HIDDEN_LAYERS, REVERSE_SPEED, STEERING_FORCE, TOP_SPEED } from './utils/constants.js';
 
 import { Controlable } from './utils/ControlPanel.js';
 import { Colidable, ControlType, Line, Parameter, Point, Polygon } from './utils/types.js';
@@ -47,8 +47,8 @@ export default class Car implements Controlable, Colidable {
         this.sensor = new Sensor(this);
         this.neuralNetwork = new NeuralNetwork([
           this.sensor.getRayCount(),
-          6,
-          4
+          ...HIDDEN_LAYERS,
+          4, // 4 outputs for forward, reverse, left, right
         ])
       case 'Player':
         this.sensor = new Sensor(this);
@@ -56,7 +56,7 @@ export default class Car implements Controlable, Colidable {
       case 'CPU':
         this.sensor = undefined;
         this.topSpeed = CPU_TOP_SPEED;
-        this.y = +300;
+        this.y = -100;
         break;
     }
   }
@@ -74,6 +74,10 @@ export default class Car implements Controlable, Colidable {
       const outputs = this.neuralNetwork.feedForward(this.sensor.getReadings());
       this.controls.setControls(outputs);
     }
+  }
+
+  public isDestroyed() {
+    return this.damaged;
   }
 
   public getNeuralNetwork(): NeuralNetwork {
@@ -198,9 +202,14 @@ export default class Car implements Controlable, Colidable {
     return this.polygonToLines(this.polygon);
   }
 
-  public draw(ctx: CanvasRenderingContext2D): void {
-    if (this.damaged) ctx.fillStyle = 'red';
-    else ctx.fillStyle = 'white';
+  public draw(ctx: CanvasRenderingContext2D, color?: string): void {
+    if (this.damaged) {
+      ctx.fillStyle = 'red';
+    } else if (color) {
+      ctx.fillStyle = color;
+    } else {
+      ctx.fillStyle = 'white';
+    }
 
     try {
       ctx.beginPath();

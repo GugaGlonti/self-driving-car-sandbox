@@ -12,15 +12,13 @@ export default class Visualizer {
 
     const layers = network.getLayers();
 
-    console.log(layers);
-
     const layerHeight = height / layers.length;
 
     for (let i = layers.length - 1; i >= 0; i--) {
       const layerTop = top + lerp(height - layerHeight, 0, layers.length == 1 ? 0.5 : i / (layers.length - 1));
 
       ctx.setLineDash([7, 3]);
-      Visualizer.drawlayer(ctx, layers[i], left, layerTop, width, layerHeight, i == layers.length - 1 ? ['🠉', '🠈', '🠊', '🠋'] : []);
+      Visualizer.drawlayer(ctx, layers[i], left, layerTop, width, layerHeight, i == layers.length - 1 ? ['⇧', '⇦', '⇨', '⇩'] : []);
     }
   }
 
@@ -29,6 +27,9 @@ export default class Visualizer {
     const bottom = top + height;
 
     const { inputs, outputs, weights, biases } = layer.getPackedData();
+
+    //reverse input array
+    inputs.reverse();
 
     for (let i = 0; i < inputs.length; i++) {
       for (let j = 0; j < outputs.length; j++) {

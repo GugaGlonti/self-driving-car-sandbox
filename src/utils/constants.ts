@@ -1,11 +1,10 @@
 const canvas = document.getElementById('canvas')! as HTMLCanvasElement;
 
-const nnCanvas = document.getElementById('nn-canvas')! as HTMLCanvasElement;
-
-console.log(canvas.width, canvas.height);
-
 // MATH
 export const INF = 1e6;
+
+// NEURAL NETWORK
+export const HIDDEN_LAYERS = [6];
 
 // CONTROLS
 export const UP = 'ArrowUp';
@@ -33,15 +32,15 @@ export const UPPER_BOUND = 0.2;
 export const LOWER_BOUND = 0.8;
 
 // SENSOR
-export const RAY_COUNT = 5;
-export const RAY_LENGTH = 200;
+export const RAY_COUNT = 10;
+export const RAY_LENGTH = 300;
 export const RAY_SPREAD = Math.PI / 2;
 
 // ROAD
 export const ROAD_CENTER = canvas.width / 2;
-export const ROAD_WIDTH = 400;
+export const ROAD_WIDTH = 600;
 export const SHOULDER_WIDTH = 20;
 export const ROAD_LEFT = ROAD_CENTER - ROAD_WIDTH / 2;
 export const ROAD_RIGHT = ROAD_CENTER + ROAD_WIDTH / 2;
-export const LANE_COUNT = 5;
+export const LANE_COUNT = 9;
 export const VISIBLE_BORDERS = 0;

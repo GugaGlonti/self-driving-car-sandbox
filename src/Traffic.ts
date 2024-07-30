@@ -1,4 +1,4 @@
-import Car from './car.js';
+import Car from './Car.js';
 import { Colidable, Line } from './utils/types.js';
 
 export default class Traffic implements Colidable {
@@ -18,5 +18,11 @@ export default class Traffic implements Colidable {
 
   public draw(ctx: CanvasRenderingContext2D) {
     this.cars.forEach(car => car.draw(ctx));
+  }
+
+  static generateAICars(count: number): Car[] {
+    return Array.from({ length: count }, () => {
+      return new Car(undefined, undefined, undefined, undefined, 'AI');
+    });
   }
 }
